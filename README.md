@@ -1,0 +1,2 @@
+# Kaku
+Japanese writing app
