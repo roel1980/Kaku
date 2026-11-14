@@ -1,0 +1,318 @@
+/* Kaku 4.0 — compositie uit afzonderlijke, tekstloze interfaceassets.
+   De HTML blijft eigenaar van labels, invoer, navigatie en voortgang. */
+:root{
+  --bg:#e6c3a7;--panel:#fffaf2;--ink:#624434;--muted:#927868;
+  --muted2:#b5a08c;--edge:#ecd8c5;--dark:#694839;--dark2:#795340;
+  --accent:#e9b95f;--accent2:#fff0d6;--green:#66b6a6;
+  --green2:#e0f4eb;--amber:#ac783c;--amber2:#fff1d5;
+  --rose:#ba7784;--rose2:#ffedf1;
+  --shadow:0 9px 25px #85614925;--radius:25px;
+  font-family:ui-rounded,"SF Pro Rounded","Avenir Next Rounded","Trebuchet MS",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{background:#e4bf9e;-webkit-text-size-adjust:100%;}
+body{
+  margin:0;min-height:100dvh;color:var(--ink);
+  background:#e9c7ae url('./hout.png') center center/cover fixed no-repeat!important;
+  font-family:ui-rounded,"SF Pro Rounded","Avenir Next Rounded","Trebuchet MS",system-ui,sans-serif;
+}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #378e88;outline-offset:2px}
+button:disabled{opacity:.48;cursor:not-allowed}
+a{color:#5c9d90}
+/* De omslag is één los afbeeldingsbestand. CSS 9-slice voorkomt dat naden of hoeken
+   in staand formaat verticaal worden uitgerekt. */
+.book-page{
+  position:relative;isolation:isolate;
+  width:min(calc(100% - 22px),1580px);min-height:max(855px,calc(100dvh - 20px));
+  margin:10px auto 16px;
+  padding:clamp(66px,6vw,95px) clamp(58px,8.2vw,135px) clamp(89px,8.5vw,130px);
+}
+.notebook-visual{
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border:110px solid transparent;
+  border-image-source:url('./schrift.png');
+  border-image-slice:150 160 140 150 fill;
+  border-image-width:100px 100px 100px 108px;
+  border-image-repeat:stretch;
+}
+/* Tabs liggen fysiek boven de binnenpagina. Het logo blijft links zelfstandig. */
+.app-header{
+  position:relative!important;z-index:10;
+  display:grid!important;grid-template-columns:minmax(170px,26%) minmax(0,1fr);
+  align-items:center;justify-content:normal;gap:2.1%;
+  margin:0 0 26px!important;padding:0!important;
+  min-height:83px;background:transparent!important;
+  top:auto!important;left:auto!important;right:auto!important;
+  box-shadow:none!important;
+}
+.brand-button{
+  display:flex;justify-content:flex-start;align-items:center;background:transparent!important;
+  padding:0;margin:0 0 0 -18px;border:0;outline-offset:5px;
+  width:100%;max-width:270px;height:82px;z-index:3;
+}
+.brand-button img{width:100%;height:auto;max-height:90px;object-fit:contain;filter:drop-shadow(0 4px 3px #60402c25)}
+.book-tabs{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;
+  width:100%;align-items:end;justify-content:end;height:82px;
+  min-width:0;margin:0;
+}
+.tab-item{
+  position:relative;min-width:0;width:100%;height:83px;margin:0;
+  border:0;padding:0 2px 0;background-color:transparent!important;background-position:center center;background-repeat:no-repeat;
+  background-size:100% 100%;background-color:transparent!important;color:#654233;
+  font-size:clamp(11px,1.22vw,16px);font-weight:850;white-space:nowrap;
+  display:flex;align-items:center;justify-content:center;transition:transform .12s;
+}
+.tab-item span{position:relative;z-index:1;transform:translateY(4px)}
+.tab-item:hover{transform:translateY(-3px)}
+.tab-item.is-active{transform:translateY(-6px)}
+.tab-item[data-nav="dashboard"]{background-image:url('./tab-overzicht-normaal.svg')}
+.tab-item[data-nav="dashboard"].is-active{background-image:url('./tab-overzicht-actief.svg')}
+.tab-item[data-nav="practice"]{background-image:url('./tab-oefening-normaal.svg')}
+.tab-item[data-nav="practice"].is-active{background-image:url('./tab-oefening-actief.svg')}
+.tab-item[data-nav="library"]{background-image:url('./tab-woordenlijst-normaal.svg')}
+.tab-item[data-nav="library"].is-active{background-image:url('./tab-woordenlijst-actief.svg')}
+.tab-item[data-nav="settings"]{background-image:url('./tab-instellingen-normaal.svg')}
+.tab-item[data-nav="settings"].is-active{background-image:url('./tab-instellingen-actief.svg')}
+/* App content blijft normale documentflow: geen tekst meer op een achtergrondplaat geplakt. */
+#main{
+  display:block;position:relative;z-index:2;
+  width:100%!important;min-width:0;max-width:none!important;
+  margin:0!important;padding:0 0 20px!important;
+}
+.page-head{margin:3px 0 22px}.page-title{font-weight:860;font-size:clamp(28px,3vw,39px);color:var(--ink);letter-spacing:-1px}
+.page-subtitle,.stat-caption,.activity-sub,.result-caption,.settings-footnote,.catalog-count{color:var(--muted)}
+.section-head{margin-bottom:14px;gap:14px;align-items:center}
+.section-title{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  min-width:250px;min-height:48px;margin:0;padding:8px 22px;
+  font-size:clamp(16px,1.6vw,20px);font-weight:840;color:#704b3c;
+  border:0;background:url('./label-roze.svg') center/100% 100% no-repeat;
+}
+.section-title:before{content:'✿';margin-right:9px;color:#d78a9d}
+.dashboard-layout{grid-template-columns:minmax(0,1.48fr) minmax(290px,.96fr);gap:18px}
+.hero{
+  position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
+  border:0;border-radius:22px;min-height:255px;height:265px;padding:29px 31px 26px;
+  background:transparent url('./paneel-hero.svg') center/100% 100% no-repeat!important;
+  box-shadow:none!important;
+}
+.hero:before,.hero:after{content:none!important;display:none!important}
+.hero-cat{position:absolute;right:0;bottom:-12px;width:52%;height:100%;object-fit:contain;object-position:right bottom;z-index:1;pointer-events:none}
+.hero-heading{position:relative;z-index:3;color:#624333;max-width:52%;margin:0 0 17px;line-height:1.14;font-size:clamp(23px,2.4vw,33px);font-weight:880;letter-spacing:-.5px}
+.hero .button{position:relative;z-index:3}
+.panel,.question-panel,.answer-panel,.type-card,.result-hero,.result-stat,.settings-panel,.recent-panel,.progress-summary,.stat-card,.mistakes{
+  border:0!important;border-radius:22px!important;box-shadow:none!important;
+  color:var(--ink);
+  background:transparent url('./paneel-standaard.svg') center/100% 100% no-repeat!important;
+}
+.progress-summary{background-image:url('./paneel-statistiek.svg')!important;min-height:265px;padding:28px 29px 26px}
+.stat-card{min-width:0;min-height:176px;padding:19px 29px 18px}
+.stat-grid{gap:14px}
+.stat-card:nth-child(1){background-image:url('./kaart-kanji.svg')!important}
+.stat-card:nth-child(2){background-image:url('./kaart-woorden.svg')!important}
+.stat-card:nth-child(3){background-image:url('./kaart-zinnen.svg')!important}
+.stat-icon{width:52px;height:47px;background:transparent!important;margin:0 0 9px;padding:0;display:grid;place-items:center}
+.stat-icon img{width:58px;height:53px;object-fit:contain;display:block}
+.stat-label{color:var(--ink);font-size:15px;font-weight:820}
+.stat-main{font-size:25px;color:var(--ink);margin:7px 0 10px;line-height:1.15}
+.stat-main small{font-size:12px;color:var(--muted)}
+.stat-foot{margin-top:9px;color:var(--muted)}.stat-foot span{color:var(--muted)}
+.stat-card .progress-track{margin-top:auto}
+.progress-track{height:12px;border-radius:22px;background:#e5eee7;border:1px solid #d2e1d6;box-shadow:inset 0 2px 4px #70978418;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#a9e5d2,#61bbaa);border-radius:99px;min-width:0}
+.small-eyebrow{display:inline-flex;align-items:center;min-height:34px;padding:7px 13px;background:url('./badge-niveau.svg') center/100% 100% no-repeat;color:#795e86;font-weight:830;font-size:11px;letter-spacing:.03em}
+.status{display:inline-flex;align-items:center;background:#fff6e9;border:1px solid #ead7c5;color:#8d796b;border-radius:999px;padding:7px 12px;font-size:11px}
+.status:before{background:currentColor}
+.big-number{color:#684334;font-size:56px;font-weight:900}
+.big-number small{font-size:18px;color:var(--muted)}
+.divider{border:0;border-top:1.5px dashed #e6d3c3}
+.dashboard-section{margin-top:22px}
+.recent-panel{background-image:url('./paneel-breed.svg')!important;padding:22px 26px 20px;min-height:135px;width:100%;max-width:none}
+.recent-panel>.section-title{background-image:url('./label-geel.svg');margin-top:-4px;margin-bottom:5px}
+.recent-panel>.section-title:before{content:'◷';color:#c48e59}
+.activity-row{border-color:#edd8c7;padding:11px 0}
+.activity-main{color:var(--ink);font-size:14px;font-weight:780}.activity-score{color:var(--ink);font-weight:900}
+.activity-icon{background:#e0f4e9;color:#6b9481;border-radius:13px}
+.dashboard-version{font-size:11px;color:#9b8271;padding:8px 3px 0;margin:0}
+/* Reusable buttons are truly separate image assets, while their labels stay HTML. */
+.button{
+  border:0!important;display:inline-flex;align-items:center;justify-content:center;
+  gap:8px;min-height:47px;padding:11px 22px;border-radius:999px;
+  color:#674334;font-weight:840;font-size:14px;
+  background:transparent url('./knop-secundair.svg') center/100% 100% no-repeat!important;
+  box-shadow:none!important;white-space:nowrap;transition:transform .12s;
+}
+.button:hover{transform:translateY(-2px)}.button:active{transform:translateY(1px)}
+.button.primary,.hero .button{
+  min-height:53px;padding:12px 26px;
+  background-image:url('./knop-primair.svg')!important;
+  color:#613f28;
+}
+.button.primary:active,.hero .button:active{background-image:url('./knop-primair-ingedrukt.svg')!important}
+.button.dark{background-image:url('./knop-primair.svg')!important;color:#61412f}
+.button.outline{background-image:url('./knop-secundair.svg')!important;color:#674334}
+.button.danger{background-image:url('./knop-secundair.svg')!important;color:#b35c6c}
+.button.mini{min-height:41px;padding:8px 16px;font-size:12px}
+.button svg{width:18px;height:18px}
+.pill,.level-pill,.filter-pill,.small-button{
+  min-height:41px;padding:9px 14px;border:2px solid #ead6c6;border-radius:15px;
+  background:#fffbf4;color:#704b3b;box-shadow:0 3px 0 rgba(181,138,111,.1);
+  font-weight:800;
+}
+.pill.active,.level-pill.active,.filter-pill.active{background:linear-gradient(#f0fff8,#d8f4eb);border-color:#76beaf;color:#4a8475;box-shadow:0 2px 0 #91cec0}
+.level-pill{min-width:57px}
+/* Oefening instellen: volle breedte, CTA direct na aantal. */
+.setup-grid{grid-template-columns:minmax(0,1fr)}
+.setup-panel{background-image:url('./paneel-breed.svg')!important;gap:22px;padding:30px 34px 28px}
+.setup-panel>.setup-start{margin:0;justify-self:start;min-width:235px}
+.field-label{font-weight:850;font-size:15px;color:var(--ink);margin-bottom:12px}
+.type-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.type-card{
+  display:flex;flex-direction:column;align-items:flex-start;min-height:142px;
+  padding:16px 20px;gap:6px;position:relative;color:#6e493b;
+  background-image:url('./kaart-kanji.svg')!important;
+}
+.type-card[data-value="words"]{background-image:url('./kaart-woorden.svg')!important}
+.type-card[data-value="sentences"]{background-image:url('./kaart-zinnen.svg')!important}
+.type-card.active{outline:3px solid #5db4a6;outline-offset:-4px;box-shadow:0 0 0 3px #effaf3!important}
+.type-card-icon{height:54px;width:58px;display:flex;align-items:center}
+.type-card-icon img{height:58px;width:58px;object-fit:contain}
+.type-card strong{font-size:17px;font-weight:860}
+.type-card .type-desc{font-size:12px;color:var(--muted)}
+/* Quiz: schermvullend, sidebar afwezig. Systeemhandschriftpaneel blijft bruikbaar. */
+body.quiz-view .app-header{display:none!important}
+body.quiz-view .book-page{padding-top:105px;min-height:100dvh}
+body.quiz-view #main{padding:0 0 8px!important}
+body.quiz-view .quiz-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:stretch}
+body.quiz-view .quiz-head{margin-bottom:12px}
+body.quiz-view .quiz-topline{color:var(--muted);font-weight:720}
+body.quiz-view .quiz-progress{margin-bottom:14px;height:10px;border-radius:99px;background:#e9eadd}
+body.quiz-view .quiz-progress>div{background:linear-gradient(90deg,#f6d58d,#e8aa93)}
+body.quiz-view:not(.writing-mode) .question-panel,
+body.quiz-view:not(.writing-mode) .answer-panel{min-height:clamp(250px,43vh,460px)}
+.question-panel{background-image:url('./paneel-vraag.svg')!important;justify-content:center;padding:25px}
+.answer-panel{background-image:url('./paneel-antwoord.svg')!important;padding:25px}
+.question-word{font-size:clamp(28px,3.5vw,47px);color:#674434;font-weight:870}
+.question-word.sentence{font-size:clamp(18px,2.4vw,28px)}
+.answer-label{color:var(--ink);font-weight:840}
+.answer-input{
+  width:100%;border:2px solid #92c2b6;border-radius:18px;
+  background:#fffefb;box-shadow:inset 0 0 0 2px #d7f0e7;
+  color:var(--ink);font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+}
+.answer-input:focus{border-color:#5db6a5;box-shadow:0 0 0 3px #bce5da}
+.answer-input::placeholder{color:#baaaa1}
+.answer-actions{margin-top:12px}
+.answer-actions .button{min-width:124px}
+.feedback-card{background:#fff9f1;border:2px dashed #e8d5c3;border-radius:18px}
+.feedback-card.correct{background:#e6f8ee;border-color:#b6d9bd}
+.feedback-card.wrong{background:#fff0ef;border-color:#e9b4b5}
+/* Resultaat, bibliotheek, instellingen en dialoog blijven in dezelfde papierstijl. */
+.result-hero{background-image:url('./paneel-resultaat.svg')!important}
+.result-circle{background:#f0fcf5;border:8px solid #a7decb;color:#428d76}
+.result-stat{background-image:url('./paneel-standaard.svg')!important}
+.result-actions{gap:12px}
+.mistakes{background-image:url('./paneel-breed.svg')!important}
+.catalog-toolbar{gap:12px}
+.search-input{background:#fffdf7;border:2px solid #ebd8ca;border-radius:14px;color:var(--ink)}
+.catalog-table th{background:#fff4e7;color:#886d5c}
+.catalog-table td{border-color:#efdece}
+.catalog-table tbody tr:hover{background:#fff7ed}
+.settings-panel{background-image:url('./paneel-standaard.svg')!important;padding:28px}
+.settings-panel h2{color:var(--ink)}.settings-panel p{color:var(--muted)}
+.detail-dialog{background:#fffaf1;border:3px solid #e9d3c3;border-radius:23px;color:var(--ink)}
+.detail-dialog::backdrop{background:#4a332c7a}
+.toast{background:#654638;color:#fff;border-radius:13px}
+/* Losstaande aankleding; staat boven de boekranden, nooit als crop van één mock-up. */
+.decor{display:none;position:absolute;z-index:5;pointer-events:none}
+body[data-view="dashboard"] .decor{display:block}
+.decor img{height:100%;width:100%;object-fit:contain;display:block}
+.decor-sakura{width:150px;height:135px;top:-14px;left:7px;z-index:4}
+.decor-dango{width:135px;height:135px;bottom:-12px;left:-18px}
+.decor-kopje{width:145px;height:165px;right:-18px;bottom:-15px}
+/* Standaard portret: boek groeit verticaal dankzij 9-slice; tabs krijgen een eigen rij. */
+@media (max-width:1100px){
+  .book-page{padding-left:clamp(56px,8vw,98px);padding-right:clamp(56px,8vw,98px)}
+  .app-header{gap:1%;grid-template-columns:minmax(175px,27%) minmax(0,1fr)}
+  .tab-item{font-size:clamp(11px,1.25vw,14px)}
+  .hero{min-height:235px;height:245px}
+  .progress-summary{min-height:245px}
+  .hero-heading{font-size:clamp(21px,2.5vw,28px)}
+  .stat-card{padding:15px 23px 16px;min-height:165px}
+  .stat-icon{margin-bottom:2px}
+}
+@media (orientation:portrait),(max-width:850px){
+  .book-page{min-height:max(1020px,calc(100dvh - 20px));padding:65px clamp(48px,7vw,76px) 105px}
+  .notebook-visual{border-image-width:88px 73px 92px 83px}
+  .app-header{grid-template-columns:1fr;gap:0;margin-bottom:18px!important;min-height:0}
+  .brand-button{height:65px;width:226px;max-width:60%;margin-left:-8px}
+  .book-tabs{height:70px;width:100%;margin:-3px 0 0}
+  .tab-item{height:73px;font-size:clamp(11px,2.2vw,15px)}
+  .dashboard-layout{grid-template-columns:1fr;gap:13px}
+  .hero{height:252px;min-height:252px}
+  .progress-summary{min-height:206px;padding:22px 25px}
+  .big-number{font-size:45px}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+  .stat-card:last-child{grid-column:1/-1}
+  .dashboard-section{margin-top:15px}
+  .decor-sakura{top:0;left:15px;width:95px;height:95px}
+  .decor-dango{width:112px;height:112px;left:0}
+  .decor-kopje{width:122px;height:126px;right:-8px}
+  body.quiz-view .book-page{padding-top:88px}
+  body.quiz-view .quiz-grid{grid-template-columns:minmax(0,1fr);gap:11px}
+  body.quiz-view:not(.writing-mode) .question-panel{min-height:150px}
+  body.quiz-view:not(.writing-mode) .answer-panel{min-height:250px}
+  .type-card{padding:13px;min-height:128px}
+}
+@media (max-width:560px){
+  .book-page{width:calc(100% - 8px);margin:5px auto 10px;padding:46px 28px 78px;min-height:max(920px,calc(100dvh - 10px))}
+  .notebook-visual{border-image-width:65px 32px 68px 35px}
+  .brand-button{height:54px;width:195px;max-width:65%}
+  .book-tabs{height:58px}
+  .tab-item{height:58px;font-size:clamp(9px,2.45vw,12px)}
+  .tab-item span{transform:translateY(2px)}
+  .page-title{font-size:28px}
+  .hero{height:228px;min-height:228px;padding:21px}
+  .hero-heading{font-size:23px;max-width:60%}
+  .hero-cat{width:56%;right:-5px}
+  .hero .button{min-height:45px;padding:7px 12px;font-size:12px}
+  .stat-grid{grid-template-columns:1fr;gap:8px}
+  .stat-card:last-child{grid-column:auto}
+  .stat-card{min-height:156px}
+  .section-head{align-items:flex-start}
+  .section-title{font-size:16px;min-width:218px}
+  .level-row{gap:6px}.level-pill{min-width:42px;padding:7px 9px;min-height:34px}
+  .type-grid{gap:8px}.type-card{padding:9px;min-height:113px}.type-card-icon{height:41px}.type-card-icon img{height:43px}
+  .type-card strong{font-size:13px}.type-card .type-desc{font-size:10px}
+  .setup-panel{padding:17px;gap:19px}
+  .setup-panel>.setup-start{width:100%;min-width:0}
+  .recent-panel{padding:14px 16px}
+  .decor-dango,.decor-kopje{width:87px;height:90px}
+  body.quiz-view .book-page{padding:82px 23px 66px}
+  body.quiz-view .quiz-head .page-title{font-size:23px}
+  body.quiz-view .question-panel,body.quiz-view .answer-panel{padding:16px}
+}
+/* In de handschriftmodus blijven kop en invoerveld boven iPadOS zichtbaar.
+   Niet via 'input type=handwriting' — dat bestaat niet in webstandaarden. */
+body.writing-mode .app-header{display:none!important}
+body.quiz-view.writing-mode .book-page{padding-top:86px!important}
+body.quiz-view.writing-mode .quiz-head{margin-bottom:6px}
+body.quiz-view.writing-mode .quiz-head .page-title{font-size:18px}
+body.quiz-view.writing-mode .quiz-progress{margin-bottom:7px;height:6px}
+body.quiz-view.writing-mode .quiz-grid{gap:10px}
+body.quiz-view.writing-mode .question-panel,body.quiz-view.writing-mode .answer-panel{min-height:130px;max-height:none;padding:12px 17px}
+body.quiz-view.writing-mode .answer-input{height:64px;min-height:64px;max-height:78px;margin-top:7px;padding:8px 13px;font-size:27px;flex:none}
+body.quiz-view.writing-mode .answer-actions{margin-top:7px}
+body.quiz-view.writing-mode .answer-actions .button{min-width:0;min-height:37px;padding:8px 12px;font-size:11px}
+body.quiz-view.writing-mode .question-word{font-size:clamp(21px,2.7vw,32px)}
+body.quiz-view.writing-mode .question-word.sentence{font-size:18px}
+body.quiz-view.writing-mode #main{padding-top:0!important}
+@media (orientation:portrait){
+ body.quiz-view.writing-mode .book-page{padding-top:75px!important}
+ body.quiz-view.writing-mode .question-panel{min-height:82px!important;padding:8px 12px}
+ body.quiz-view.writing-mode .answer-panel{min-height:115px!important;padding:9px 12px}
+ body.quiz-view.writing-mode .answer-input{height:56px;min-height:56px;margin-top:5px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
