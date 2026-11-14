@@ -1,9 +1,17 @@
-/* Kaku 4.1 — isolated assets, offline-first PWA. Progress remains in localStorage. */
-const CACHE='kaku-offline-v15-assets41';
+/* Kaku 4.2 — isolated assets, offline-first PWA. Progress remains in localStorage. */
+const CACHE='kaku-offline-v16-book42';
 const APP_FILES=[
   "./",
   "./badge-niveau.svg",
   "./hout.png",
+  "./boek-boven.png",
+  "./boek-boven-portret.png",
+  "./boek-boven-telefoon.png",
+  "./boek-papier-voorgrond-telefoon.png",
+  "./boek-papier-voorgrond-portret.png",
+  "./boek-midden-herhaal.png",
+  "./boek-onder.png",
+  "./boek-papier-voorgrond.png",
   "./ico-kanji-41.svg",
   "./ico-woorden-41.svg",
   "./ico-zinnen-41.svg",
