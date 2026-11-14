@@ -20,11 +20,12 @@
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
 
-/* Kaku 1.2 — compacte iPadOS-schrijfinvoer.
+.answer-submit-form{display:none}
+/* Kaku 1.3 — compacte iPadOS-schrijfinvoer.
    Het systeemhandschriftpaneel bedekt de onderste helft van het scherm;
    deze modus houdt de vraag en het invoerveld samen in het zicht. */
 body.writing-mode .topbar{display:none}
-body.writing-mode main{padding-top:12px;padding-bottom:28px}
+body.writing-mode main{padding-top:calc(12px + var(--writing-push,0px));padding-bottom:28px}
 body.writing-mode .quiz-head{margin-bottom:8px;align-items:center}
 body.writing-mode .quiz-head .page-title{font-size:19px;letter-spacing:-.35px}
 body.writing-mode .quiz-head .eyebrow{font-size:10px;margin-bottom:3px}
@@ -51,7 +52,7 @@ body.writing-mode .answer-actions-note,body.writing-mode .keyboard-hint{display:
 @media (orientation:portrait){
   body.writing-mode .sidebar{display:none}
   body.writing-mode .quiz-grid{grid-template-columns:minmax(0,1fr)}
-  body.writing-mode main{padding:8px 18px 25px}
+  body.writing-mode main{padding:calc(8px + var(--writing-push,0px)) 18px 25px}
   body.writing-mode .quiz-head{margin-bottom:6px}
   body.writing-mode .quiz-head .page-title{font-size:17px}
   body.writing-mode .quiz-head .eyebrow{margin-bottom:1px}
@@ -87,7 +88,7 @@ body.writing-mode .answer-actions-note,body.writing-mode .keyboard-hint{display:
         <button type="button" data-nav="library" class="nav-item"><span class="nav-icon" data-icon="book"></span><span>Woordenlijst</span></button>
         <button type="button" data-nav="settings" class="nav-item"><span class="nav-icon" data-icon="settings"></span><span>Instellingen</span></button>
       </nav>
-      <div class="side-bottom"><div class="connection" id="connection-status"><span class="connection-dot"></span>Offline beschikbaar na installatie</div><div class="side-caption">Kaku 1.2 · Schrijfmodus verbeterd</div></div>
+      <div class="side-bottom"><div class="connection" id="connection-status"><span class="connection-dot"></span>Offline beschikbaar na installatie</div><div class="side-caption">Kaku 1.3 · Verzenden en schrijfblok</div></div>
     </aside>
     <div class="workspace">
       <header class="topbar"><div class="topbar-breadcrumb"><span id="breadcrumb">Mijn overzicht</span></div><div class="topbar-actions"><span class="today-label" id="today-label"></span><span class="avatar" aria-hidden="true">日</span></div></header>
@@ -338,10 +339,11 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
       <div class="quiz-topline"><span>Vraag ${quiz.pos+1} van ${quiz.queue.length}</span><span>${quiz.results.filter(x=>x.correct).length} goed tot nu toe</span></div><div class="quiz-progress"><div style="width:${percentage}%"></div></div>
       <div class="quiz-grid"><section class="question-panel"><div class="question-label">${quiz.language==='nl'?'NEDERLANDS':'ENGLISH'} · ${item.type==='kanji'?'KANJI':item.type==='words'?'WOORD':'ZIN'}</div><div class="question-centered"><div class="question-word ${sentence?'sentence':''}">${esc(prompt)}</div><div class="question-instruction">${item.type==='kanji'?'Schrijf het bijbehorende karakter.':item.type==='words'?'Gebruik de Japanse schrijfwijze met Kanji waar mogelijk.':'Schrijf de volledige Japanse zin.'}</div></div><div class="question-bottom">${ico('spark').replace('<svg','<svg style="width:15px;height:15px"')} Geen tijdslimiet. Je kunt rustig nadenken.</div></section>
       <section class="panel answer-panel"><div class="answer-label-row"><label class="answer-label" for="answer-input">Jouw antwoord</label><div class="answer-help">${ico('pen').replace('<svg','<svg style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px"')} Apple Pencil of toetsenbord</div></div>
-      <textarea id="answer-input" class="answer-input" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Schrijf hier in het Japans…" ${p?'disabled':''}>${p?esc(p.text):''}</textarea>
+      <form id="answer-form" class="answer-submit-form" autocomplete="off"></form>
+       <input id="answer-input" class="answer-input" type="text" form="answer-form" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Schrijf hier in het Japans…" value="${p?esc(p.text):''}" ${p?'disabled':''}>
       ${feedback}
-      <div class="answer-actions"><div class="answer-actions-note">${p?'Bekijk de schrijfwijze en ga verder.':'Gebruik het Japanse handschrifttoetsenbord van iPadOS.'}</div><div style="display:flex;gap:8px">${p?`<button class="button primary" data-action="next">${quiz.pos+1===quiz.queue.length?'Bekijk score':'Volgende vraag'} ${ico('arrow')}</button>`:`<button class="button outline" data-action="skip">Overslaan</button><button class="button dark" data-action="check">Controleren ${ico('check')}</button>`}</div></div>
-      <div class="keyboard-hint">${ico('keyboard').replace('<svg','<svg style="width:15px;height:15px"')} Met Magic Keyboard: <span class="key">Enter</span> controleren / volgende, <span class="key">Shift + Enter</span> nieuwe regel</div>
+      <div class="answer-actions"><div class="answer-actions-note">${p?'Bekijk de schrijfwijze en ga verder.':'Gebruik het Japanse handschrifttoetsenbord van iPadOS.'}</div><div style="display:flex;gap:8px">${p?`<button class="button primary" data-action="next">${quiz.pos+1===quiz.queue.length?'Bekijk score':'Volgende vraag'} ${ico('arrow')}</button>`:`<button class="button outline" data-action="skip">Overslaan</button><button class="button dark" type="submit" form="answer-form">Controleren ${ico('check')}</button>`}</div></div>
+      <div class="keyboard-hint">${ico('keyboard').replace('<svg','<svg style="width:15px;height:15px"')} Met Magic Keyboard: <span class="key">Enter</span> controleren / volgende</div>
       </section></div>`;
   }
   function renderResult() {
@@ -414,6 +416,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
   function render() {
     // Opnieuw bepalen na elke vraag: feedback mag niet in de compacte modus blijven.
     document.body.classList.remove('writing-mode');
+    document.querySelector('main')?.style.removeProperty('--writing-push');
     const main=document.querySelector('#main');
     main.innerHTML=({ dashboard:renderDashboard, practice:renderPractice, library:renderLibrary, settings:renderSettings, quiz:renderQuiz, result:renderResult }[view] || renderDashboard)();
     document.querySelector('#breadcrumb').textContent=({dashboard:'Mijn overzicht',practice:'Nieuwe oefening',library:'Woordenlijst',settings:'Instellingen',quiz:'Aan het oefenen',result:'Oefening afgerond'})[view]||'Kaku';
@@ -476,33 +479,49 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
   let writingScrollToken=0;
   function scrollWritingIntoView() {
     if (!document.body.classList.contains('writing-mode')) return;
+    const main=document.querySelector('main');
     const prompt=document.querySelector('.question-word');
-    const answerLabel=document.querySelector('.answer-label-row');
+    const answer=document.querySelector('.answer-panel');
     const input=document.querySelector('#answer-input');
-    if (!prompt || !answerLabel || !input) return;
+    if (!main || !prompt || !answer || !input) return;
     const vv=window.visualViewport;
     const visibleTop=vv ? vv.offsetTop : 0;
     const visibleBottom=visibleTop+(vv ? vv.height : window.innerHeight);
-    const promptBox=prompt.getBoundingClientRect();
-    const labelBox=answerLabel.getBoundingClientRect();
-    const inputBox=input.getBoundingClientRect();
-    const groupTop=Math.min(promptBox.top,labelBox.top)-12;
-    const groupBottom=Math.max(promptBox.bottom,inputBox.bottom)+14;
-    const available=visibleBottom-visibleTop;
-    // Wanneer beide velden niet tegelijk passen, krijgt het antwoordveld voorrang.
-    let shift=0;
-    if(groupBottom>visibleBottom) shift=groupBottom-visibleBottom;
-    else if(groupTop<visibleTop+8 && groupBottom-groupTop<available-12)
-      shift=groupTop-visibleTop-8;
-    if(Math.abs(shift)>2) window.scrollBy(0,shift);
+    const screenHeight=window.screen?.height||window.innerHeight;
+    const keyboardOcclusion=Math.max(window.innerHeight,screenHeight)-visibleBottom;
+    // Verplaats alleen naar het schrijfblok als het scherm werkelijk is verkleind.
+    // Zonder schermtoetsenbord (Magic Keyboard) blijft de gebruikelijke layout staan.
+    const keyboardVisible=keyboardOcclusion>120;
+    const oldPush=parseFloat(main.style.getPropertyValue('--writing-push'))||0;
+    const answerRect=answer.getBoundingClientRect();
+    const promptRect=prompt.getBoundingClientRect();
+    if (!keyboardVisible) {
+      if(oldPush) main.style.setProperty('--writing-push','0px');
+      return;
+    }
+    // Dock de complete quiz vlak boven iPadOS-handschrift, met 15px ruimte.
+    // Rekening houden met de bestaande verschuiving voorkomt oscillaties bij resize.
+    const targetBottom=visibleBottom-15;
+    const delta=targetBottom-answerRect.bottom;
+    const newPush=Math.max(0,Math.min(360,oldPush+delta));
+    if(Math.abs(oldPush-newPush)>2) main.style.setProperty('--writing-push',Math.round(newPush)+'px');
+    // Past alles niet in het zichtbare deel, dan gaat het invoerveld voor.
+    const nextInput=input.getBoundingClientRect();
+    const nextPrompt=prompt.getBoundingClientRect();
+    const nextAnswer=answer.getBoundingClientRect();
+    let scrollDelta=0;
+    if(nextAnswer.bottom>visibleBottom-9) scrollDelta=nextAnswer.bottom-visibleBottom+9;
+    else if(nextPrompt.top<visibleTop+7 && nextInput.bottom-nextPrompt.top<visibleBottom-visibleTop-14)
+      scrollDelta=nextPrompt.top-visibleTop-7;
+    if(Math.abs(scrollDelta)>3) window.scrollBy(0,scrollDelta);
   }
   function scheduleWritingScroll() {
     const token=++writingScrollToken;
     requestAnimationFrame(()=>{
       if(token===writingScrollToken) scrollWritingIntoView();
     });
-    // iPadOS opent de handschriftinvoer met een animatie. Meet meerdere keren.
-    for(const ms of [100,260,510]) setTimeout(()=>{
+    // Op iPadOS animeert het handschriftpaneel; meet tijdens én na de animatie.
+    for(const ms of [90,230,450,680]) setTimeout(()=>{
       if(token===writingScrollToken) scrollWritingIntoView();
     },ms);
   }
@@ -512,7 +531,10 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
       input && document.activeElement===input);
     document.body.classList.toggle('writing-mode',active);
     if(active) scheduleWritingScroll();
-    else ++writingScrollToken;
+    else {
+      ++writingScrollToken;
+      document.querySelector('main')?.style.removeProperty('--writing-push');
+    }
   }
   document.addEventListener('focusin',e=>{
     if(e.target?.id==='answer-input') syncWritingMode();
@@ -569,12 +591,36 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     if(e.target.id==='status-select'){catalog.status=e.target.value;catalog.limit=60;document.querySelector('#catalog-results').innerHTML=catalogTable();}
     if(e.target.id==='backup-file'){importBackup(e.target.files?.[0]);e.target.value='';}
   });
+  let answerIsComposing=false;
+  let answerCompositionEndedAt=0;
+  document.addEventListener('compositionstart',e=>{
+    if(e.target?.id==='answer-input') answerIsComposing=true;
+  });
+  document.addEventListener('compositionend',e=>{
+    if(e.target?.id==='answer-input') {
+      answerIsComposing=false;
+      answerCompositionEndedAt=Date.now();
+    }
+  });
+  function safeKeyboardSubmit() {
+    // Bevestiging van een Japanse IME-kandidaat mag niet al de quiz insturen.
+    if(answerIsComposing || Date.now()-answerCompositionEndedAt<100) return;
+    if(quiz?.pending) next(); else check();
+  }
+  document.addEventListener('submit',e=>{
+    if(e.target?.id==='answer-form') {
+      e.preventDefault();
+      if(view==='quiz' && quiz) safeKeyboardSubmit();
+    }
+  });
   document.addEventListener('keydown',e=>{
     if(e.target.matches?.('[data-detail]')&&(e.key==='Enter'||e.key===' ')){e.preventDefault();showDetail(e.target.dataset.detail);return;}
     if(view!=='quiz'||!quiz)return;
     if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&e.keyCode!==229){
-      // Niet reageren terwijl iPadOS Japanse kandidaten bevestigt.
-      if(e.target.id==='answer-input'||(quiz.pending&&e.target.tagName!=='BUTTON')){e.preventDefault();if(quiz.pending)next();else check();}
+      // Enter van iPadOS, Apple Pencil of Magic Keyboard: één keer insturen.
+      if(e.target.id==='answer-input'||(quiz.pending&&e.target.tagName!=='BUTTON')){
+        e.preventDefault();safeKeyboardSubmit();
+      }
     }
   });
   document.querySelector('#detail-dialog').addEventListener('click',e=>{
