@@ -21,7 +21,7 @@
 
 
 .answer-submit-form{display:none}
-/* Kaku 1.3 — compacte iPadOS-schrijfinvoer.
+/* Kaku 1.4 — compacte iPadOS-schrijfinvoer.
    Het systeemhandschriftpaneel bedekt de onderste helft van het scherm;
    deze modus houdt de vraag en het invoerveld samen in het zicht. */
 body.writing-mode .topbar{display:none}
@@ -72,7 +72,41 @@ body.writing-mode .answer-actions-note,body.writing-mode .keyboard-hint{display:
   body.writing-mode .question-panel,body.writing-mode .answer-panel{min-height:140px}
 }
 
-</style>
+
+/* Kaku 1.4 — interface without decorative copy. */
+.topbar,.brand-subtitle,.connection,.eyebrow,.section-sub,.hero-caption,.hero-copy,
+.question-instruction,.question-bottom,.answer-help,.answer-actions-note,.keyboard-hint{display:none!important}
+main{padding-top:28px}
+.page-head{margin-bottom:23px}
+.page-title{font-size:clamp(29px,3.2vw,37px)}
+.hero{min-height:215px;padding:30px 35px;justify-content:space-between}
+.hero-heading{margin:0 0 22px;max-width:550px}
+.recent-panel{max-width:900px}
+.setup-panel{gap:29px}
+.setup-aside-heading{padding:19px 23px}
+.setup-aside-heading h3{margin:0}
+.setup-aside-heading:after{font-size:98px}
+.setup-aside-body{padding:20px 23px}
+.quiz-head{margin-bottom:12px}
+.quiz-progress{margin-bottom:17px}
+.question-panel,.answer-panel{min-height:320px}
+.question-centered{padding:10px 0}
+.answer-input{min-height:140px}
+.answer-actions{justify-content:flex-end;margin-top:13px}
+.result-hero{padding:25px 20px 15px}
+.result-circle{margin:16px auto}
+.side-caption{margin-top:0}
+@media(max-width:900px),(orientation:portrait){main{padding-top:22px}}
+@media(max-width:730px){main{padding-top:20px}.hero{min-height:205px;padding:24px}.question-panel{min-height:170px}.answer-panel{min-height:300px}.answer-input{min-height:140px}}
+/* Keep iPad handwriting dock compact, without oversizing the new header. */
+body.writing-mode main{padding-top:calc(10px + var(--writing-push,0px))}
+body.writing-mode .quiz-head{margin-bottom:6px}
+body.writing-mode .quiz-progress{margin-bottom:7px}
+body.writing-mode .question-panel,body.writing-mode .answer-panel{min-height:135px}
+body.writing-mode .answer-actions{margin-top:7px}
+@media(orientation:portrait){body.writing-mode main{padding-top:calc(7px + var(--writing-push,0px))}body.writing-mode .question-panel{min-height:85px}body.writing-mode .answer-panel{min-height:130px}}
+
+  </style>
   <title>Kaku — Japans schrijven</title>
 </head>
 <body>
@@ -80,7 +114,7 @@ body.writing-mode .answer-actions-note,body.writing-mode .keyboard-hint{display:
     <aside class="sidebar" aria-label="Hoofdnavigatie">
       <div class="brand-block">
         <div class="brand-stamp" aria-hidden="true">書</div>
-        <div><div class="brand-name">kaku<span class="brand-dot">.</span></div><div class="brand-subtitle">日本語を練習しよう</div></div>
+        <div><div class="brand-name">kaku<span class="brand-dot">.</span></div></div>
       </div>
       <nav class="side-nav" id="navigation">
         <button type="button" data-nav="dashboard" class="nav-item is-active"><span class="nav-icon" data-icon="home"></span><span>Overzicht</span></button>
@@ -88,10 +122,10 @@ body.writing-mode .answer-actions-note,body.writing-mode .keyboard-hint{display:
         <button type="button" data-nav="library" class="nav-item"><span class="nav-icon" data-icon="book"></span><span>Woordenlijst</span></button>
         <button type="button" data-nav="settings" class="nav-item"><span class="nav-icon" data-icon="settings"></span><span>Instellingen</span></button>
       </nav>
-      <div class="side-bottom"><div class="connection" id="connection-status"><span class="connection-dot"></span>Offline beschikbaar na installatie</div><div class="side-caption">Kaku 1.3 · Verzenden en schrijfblok</div></div>
+      <div class="side-bottom"><div class="side-caption">Versie 1.4</div></div>
     </aside>
     <div class="workspace">
-      <header class="topbar"><div class="topbar-breadcrumb"><span id="breadcrumb">Mijn overzicht</span></div><div class="topbar-actions"><span class="today-label" id="today-label"></span><span class="avatar" aria-hidden="true">日</span></div></header>
+      
       <main id="main" tabindex="-1" aria-live="off"></main>
     </div>
   </div>
@@ -153,7 +187,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
       const p = JSON.parse(str);
       return {
         version: 1,
-        settings: { ...defaultData.settings, ...(p.settings || {}) },
+        settings: { ...defaultData.settings, ...(p.settings || {}), language:'nl' },
         progress: p.progress && typeof p.progress === 'object' && !Array.isArray(p.progress) ? p.progress : {},
         customAnswers: p.customAnswers && typeof p.customAnswers === 'object' && !Array.isArray(p.customAnswers) ? p.customAnswers : {},
         sessions: Array.isArray(p.sessions) ? p.sessions.slice(-200) : []
@@ -161,6 +195,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     } catch (e) { storageAvailable = false; return structuredClone(defaultData); }
   }
   let db = load();
+  db.settings.language='nl';
   let view = 'dashboard';
   let quiz = null;
   let result = null;
@@ -190,7 +225,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     return `${p.correct} goed van ${p.attempts} · ${rate}%`;
   }
   function inventory(level=db.settings.level, type=null) { return DATA.filter(x => x.level===level && (!type || x.type===type)); }
-  function byLang(item) { return item[db.settings.language] || item.en || item.nl || ''; }
+  function byLang(item) { return item.nl || item.en || ''; }
   function reviewPriority(item) {
     const p=getP(item.id); if (!p.attempts) return 3.1;
     if (p.lastCorrect === false) return 7.2;
@@ -232,7 +267,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
   function setSetting(key,value) {
     if (key==='count') value=Number(value);
     if (key==='level'&&!LEVELS.includes(value)) return;
-    if (key==='language'&&!['nl','en'].includes(value)) return;
+    if (key==='language') return;
     if (key==='type'&&!TYPES.some(x=>x.id===value)) return;
     if (key==='count'&&![5,10,25,50].includes(value)) return;
     db.settings[key]=value; save();render();
@@ -243,40 +278,40 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
   const levelChoices = () => `<div class="level-row" aria-label="JLPT-niveau">${choices('level',LEVELS.map(x=>[x,x]),'level-pill')}</div>`;
   const langChoices = () => `<div class="switch-row" aria-label="Vraagtaal">${choices('language',[['nl','Nederlands'],['en','Engels']])}</div>`;
   const pct = (n,d) => d?Math.round(100*n/d):0;
-  function header(label,subtitle,eyebrow='Jouw Japanse leeromgeving',actions='') {
-    return `<div class="page-head"><div><div class="eyebrow">${esc(eyebrow)}</div><h1 class="page-title">${esc(label)}</h1>${subtitle?`<p class="page-subtitle">${esc(subtitle)}</p>`:''}</div>${actions}</div>`;
+  function header(label,subtitle='',eyebrow='',actions='') {
+    return `<div class="page-head"><div><h1 class="page-title">${esc(label)}</h1>${subtitle?`<p class="page-subtitle">${esc(subtitle)}</p>`:''}</div>${actions}</div>`;
   }
   function renderDashboard() {
     const {pool,attempted,mastered,due,percent}=stateMeta();
     const stats=TYPES.map(type=>{
-      const items=inventory(db.settings.level,type.id); const learned=items.filter(x=>getStatus(getP(x.id))==='mastered').length;
+      const items=inventory(db.settings.level,type.id);
+      const learned=items.filter(x=>getStatus(getP(x.id))==='mastered').length;
       const tried=items.filter(x=>getP(x.id).attempts).length;
       return `<div class="panel stat-card"><div class="stat-icon">${type.id==='kanji'?ico('layers'):type.id==='words'?ico('book'):ico('pen')}</div><h3 class="stat-label">${type.label}</h3><div class="stat-main">${learned}<small> / ${items.length} beheerst</small></div><div class="progress-track"><div class="progress-fill" style="width:${pct(learned,items.length)}%"></div></div><div class="stat-foot"><span>${tried} geprobeerd</span><span>${pct(learned,items.length)}%</span></div></div>`;
     }).join('');
     const recent=db.sessions.slice(-3).reverse();
-    const activity=recent.length ? recent.map(r=>`<div class="activity-row"><div class="activity-left"><span class="activity-icon">${esc(r.level)}</span><div><div class="activity-main">${esc(TYPES.find(t=>t.id===r.type)?.label||'Oefening')}</div><div class="activity-sub">${esc(dateFor(r.date))} · ${r.total} vragen</div></div></div><div class="activity-score">${pct(r.correct,r.total)}%</div></div>`).join('') : `<div class="empty"><div class="list-empty-icon">始</div>Je hebt nog geen oefeningen gedaan.<br>Begin met vijf vragen om warm te worden.</div>`;
-    return header('Welkom bij kaku.', 'Oefen Japans door te schrijven. Met je Apple Pencil, op jouw tempo.', '', `<div class="switch-row">${langChoices()}</div>`)+
-      `<div class="dashboard-layout"><section class="hero"><div><div class="hero-caption">今日から一歩ずつ · Elke dag een stapje verder</div><h2 class="hero-heading">Schrijven is de beste manier om te onthouden.</h2><p class="hero-copy">Vertaal uit je hoofd, schrijf in het Japans en herhaal precies wat je nog lastig vindt.</p></div><button class="button" data-nav="practice">Start een oefening ${ico('arrow')}</button></section>
-      <section class="panel progress-summary"><div class="panel-topline"><span class="small-eyebrow">Je beheersing · ${esc(db.settings.level)}</span><span class="status ${mastered?'almost':'new'}">${attempted} geprobeerd</span></div><div><div class="big-number">${percent}<small>%</small></div><div class="stat-caption" style="margin:9px 0 14px">${mastered} van de ${pool.length} beschikbare items beheerst</div><div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div></div><hr class="divider"><div class="stat-caption">${ico('clock').replace('<svg','<svg style="display:inline-block;width:15px;height:15px;vertical-align:-3px;margin-right:5px"')} ${due} eerder geoefende items zijn toe aan herhaling.</div></section></div>
-      <section class="dashboard-section"><div class="section-head"><div><h2 class="section-title">Jouw voortgang per niveau</h2><div class="section-sub">Kies een niveau om te bekijken hoe ver je bent.</div></div>${levelChoices()}</div><div class="stat-grid">${stats}</div></section>
-      <section class="dashboard-section subgrid"><div class="panel recent-panel"><div class="section-head"><h2 class="section-title">Laatste oefeningen</h2></div>${activity}</div><div class="panel tips-panel"><span class="tip-tag">Slim herhalen</span><h2 class="section-title" style="margin-top:17px">De lastige woorden eerst.</h2><p>Een fout antwoord komt sneller terug. Wat je meerdere dagen goed schrijft, verschijnt steeds minder vaak. Zo bouw je echte beheersing op.</p><button class="button outline mini" data-nav="library">Bekijk alle items ${ico('arrow')}</button></div></section>`;
+    const activity=recent.length?recent.map(r=>`<div class="activity-row"><div class="activity-left"><span class="activity-icon">${esc(r.level)}</span><div><div class="activity-main">${esc(TYPES.find(t=>t.id===r.type)?.label||'Oefening')}</div><div class="activity-sub">${esc(dateFor(r.date))} · ${r.total} vragen</div></div></div><div class="activity-score">${pct(r.correct,r.total)}%</div></div>`).join(''):`<div class="empty">Nog geen oefeningen.</div>`;
+    return header('Welkom bij Kaku.')+
+      `<div class="dashboard-layout"><section class="hero"><h2 class="hero-heading">Schrijven is de beste manier om te onthouden.</h2><button class="button" data-nav="practice">Start oefening ${ico('arrow')}</button></section>
+      <section class="panel progress-summary"><div class="panel-topline"><span class="small-eyebrow">Beheersing · ${esc(db.settings.level)}</span><span class="status ${mastered?'almost':'new'}">${attempted} geprobeerd</span></div><div><div class="big-number">${percent}<small>%</small></div><div class="stat-caption" style="margin:9px 0 14px">${mastered} / ${pool.length} beheerst</div><div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div></div><hr class="divider"><div class="stat-caption">${due} te herhalen</div></section></div>
+      <section class="dashboard-section"><div class="section-head"><h2 class="section-title">Voortgang per niveau</h2>${levelChoices()}</div><div class="stat-grid">${stats}</div></section>
+      <section class="dashboard-section"><div class="panel recent-panel"><h2 class="section-title">Laatste oefeningen</h2>${activity}</div></section>`;
   }
   function renderPractice() {
-    const pool=inventory(db.settings.level,db.settings.type); const t=TYPES.find(x=>x.id===db.settings.type);
-    return header('Nieuwe oefening','Stel je oefening samen. Je kunt op ieder moment van niveau wisselen.', 'Oefenen')+`
+    const pool=inventory(db.settings.level,db.settings.type);
+    const t=TYPES.find(x=>x.id===db.settings.type);
+    return header('Nieuwe oefening')+`
       <div class="setup-grid"><section class="panel setup-panel">
-      <div class="setup-field"><div class="field-label">1. Vraagtaal</div>${langChoices()}<div class="field-hint">De betekenis verschijnt in deze taal. Jij schrijft het antwoord altijd in het Japans.</div></div>
-      <div class="setup-field"><div class="field-label">2. JLPT-niveau</div>${levelChoices()}<div class="field-hint">De indeling is een leerindicatie, geen officiële JLPT-examenlijst.</div></div>
-      <div class="setup-field"><div class="field-label">3. Wat wil je oefenen?</div><div class="type-grid">${TYPES.map(type=>`<button type="button" data-setting="type" data-value="${type.id}" class="type-card ${db.settings.type===type.id?'active':''}" aria-pressed="${db.settings.type===type.id}"><span class="type-card-icon">${type.symbol}</span><strong>${type.label}</strong><span class="type-desc">${type.desc}</span></button>`).join('')}</div></div>
-      <div class="setup-field"><div class="field-label">4. Aantal vragen</div><div class="count-row">${choices('count',[[5,'5 vragen'],[10,'10 vragen'],[25,'25 vragen'],[50,'50 vragen']])}</div></div></section>
-      <aside class="panel setup-aside"><div class="setup-aside-heading"><div class="small-eyebrow">Jouw oefening</div><h3>Klaar om te schrijven?</h3><p>Gebruik het Japanse handschrifttoetsenbord van je iPad met je Apple Pencil.</p></div><div class="setup-aside-body">
-      <div class="estimate-row"><span>Vraagtaal</span><b>${db.settings.language==='nl'?'Nederlands':'Engels'}</b></div>
+      <div class="setup-field"><div class="field-label">Niveau</div>${levelChoices()}</div>
+      <div class="setup-field"><div class="field-label">Type</div><div class="type-grid">${TYPES.map(type=>`<button type="button" data-setting="type" data-value="${type.id}" class="type-card ${db.settings.type===type.id?'active':''}" aria-pressed="${db.settings.type===type.id}"><span class="type-card-icon">${type.symbol}</span><strong>${type.label}</strong><span class="type-desc">${type.desc}</span></button>`).join('')}</div></div>
+      <div class="setup-field"><div class="field-label">Aantal vragen</div><div class="count-row">${choices('count',[[5,'5'],[10,'10'],[25,'25'],[50,'50']])}</div></div></section>
+      <aside class="panel setup-aside"><div class="setup-aside-heading"><h3>Oefening</h3></div><div class="setup-aside-body">
       <div class="estimate-row"><span>Niveau</span><b>${db.settings.level}</b></div>
-      <div class="estimate-row"><span>Oefentype</span><b>${t.label}</b></div>
+      <div class="estimate-row"><span>Type</span><b>${t.label}</b></div>
       <div class="estimate-row"><span>Vragen</span><b>${db.settings.count}</b></div>
-      <div class="estimate-row"><span>Beschikbare items</span><b>${pool.length}</b></div>
-      ${pool.length<db.settings.count?`<div class="setup-note">Dit niveau bevat ${pool.length} ${t.label.toLowerCase()} op dit niveau. Sommige items komen in deze oefening daarom meerdere keren terug.</div>`:''}
-      <button class="button primary full setup-start" data-action="start" ${!pool.length?'disabled':''}>Start oefening ${ico('arrow')}</button><div class="field-hint" style="text-align:center">Geen timer. Neem de tijd om te schrijven.</div>
+      <div class="estimate-row"><span>Beschikbaar</span><b>${pool.length}</b></div>
+      ${pool.length<db.settings.count?`<div class="setup-note">Sommige items worden herhaald.</div>`:''}
+      <button class="button primary full setup-start" data-action="start" ${!pool.length?'disabled':''}>Start oefening ${ico('arrow')}</button>
       </div></aside></div>`;
   }
   function normalizeJapanese(str) {
@@ -333,28 +368,26 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     if (!quiz) return '';
     const item=quiz.queue[quiz.pos], p=quiz.pending;
     const percentage=pct(quiz.pos,quiz.queue.length);
-    const sentence=item.type==='sentences'; const prompt=item[quiz.language]||item.en;
-    const feedback=p?`<div class="feedback-card ${p.correct?'correct':'wrong'}"><div class="feedback-line">${ico(p.correct?'check':'close')} ${p.correct?'Goed gedaan!':p.skipped?'Vraag overgeslagen':'Nog niet helemaal goed'}</div><div class="feedback-japanese" lang="ja">${esc(item.ja)}</div><div class="feedback-reading" lang="ja">${esc(item.reading)}</div>${!p.correct?`<div class="feedback-explain">${p.text?`Jouw antwoord: <strong lang="ja">${esc(p.text)}</strong><br>`:''}Je kunt een correcte alternatieve formulering alsnog goed rekenen.</div>${!p.skipped?'<div class="feedback-bottom"><button class="button outline mini" data-action="override">Dit is ook correct</button></div>':''}`:p.overridden?`<div class="feedback-explain">Deze schrijfwijze wordt voortaan als correcte variant geaccepteerd.</div>`:''}</div>`:'';
-    return `<div class="quiz-head"><div><div class="eyebrow">Oefening · ${esc(quiz.level)} · ${esc(TYPES.find(x=>x.id===quiz.type)?.label)}</div><h1 class="page-title">Schrijf het in het Japans.</h1></div><button class="button outline mini" data-action="quit">${ico('close')} Oefening stoppen</button></div>
-      <div class="quiz-topline"><span>Vraag ${quiz.pos+1} van ${quiz.queue.length}</span><span>${quiz.results.filter(x=>x.correct).length} goed tot nu toe</span></div><div class="quiz-progress"><div style="width:${percentage}%"></div></div>
-      <div class="quiz-grid"><section class="question-panel"><div class="question-label">${quiz.language==='nl'?'NEDERLANDS':'ENGLISH'} · ${item.type==='kanji'?'KANJI':item.type==='words'?'WOORD':'ZIN'}</div><div class="question-centered"><div class="question-word ${sentence?'sentence':''}">${esc(prompt)}</div><div class="question-instruction">${item.type==='kanji'?'Schrijf het bijbehorende karakter.':item.type==='words'?'Gebruik de Japanse schrijfwijze met Kanji waar mogelijk.':'Schrijf de volledige Japanse zin.'}</div></div><div class="question-bottom">${ico('spark').replace('<svg','<svg style="width:15px;height:15px"')} Geen tijdslimiet. Je kunt rustig nadenken.</div></section>
-      <section class="panel answer-panel"><div class="answer-label-row"><label class="answer-label" for="answer-input">Jouw antwoord</label><div class="answer-help">${ico('pen').replace('<svg','<svg style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px"')} Apple Pencil of toetsenbord</div></div>
+    const sentence=item.type==='sentences';const prompt=item.nl||item.en;
+    const feedback=p?`<div class="feedback-card ${p.correct?'correct':'wrong'}"><div class="feedback-line">${ico(p.correct?'check':'close')} ${p.correct?'Goed':p.skipped?'Overgeslagen':'Fout'}</div><div class="feedback-japanese" lang="ja">${esc(item.ja)}</div><div class="feedback-reading" lang="ja">${esc(item.reading)}</div>${!p.correct?`<div class="feedback-explain">${p.text?`Jouw antwoord: <strong lang="ja">${esc(p.text)}</strong>`:''}</div>${!p.skipped?'<div class="feedback-bottom"><button class="button outline mini" data-action="override">Dit is ook correct</button></div>':''}`:''}</div>`:'';
+    return `<div class="quiz-head"><div><h1 class="page-title">Schrijf in het Japans</h1></div><button class="button outline mini" data-action="quit">${ico('close')} Stoppen</button></div>
+      <div class="quiz-topline"><span>${esc(quiz.level)} · ${esc(TYPES.find(x=>x.id===quiz.type)?.label)} · Vraag ${quiz.pos+1}/${quiz.queue.length}</span><span>${quiz.results.filter(x=>x.correct).length} goed</span></div><div class="quiz-progress"><div style="width:${percentage}%"></div></div>
+      <div class="quiz-grid"><section class="question-panel"><div class="question-centered"><div class="question-word ${sentence?'sentence':''}">${esc(prompt)}</div></div></section>
+      <section class="panel answer-panel"><div class="answer-label-row"><label class="answer-label" for="answer-input">Jouw antwoord</label></div>
       <form id="answer-form" class="answer-submit-form" autocomplete="off"></form>
-       <input id="answer-input" class="answer-input" type="text" form="answer-form" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Schrijf hier in het Japans…" value="${p?esc(p.text):''}" ${p?'disabled':''}>
+       <input id="answer-input" class="answer-input" type="text" form="answer-form" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Schrijf in het Japans…" value="${p?esc(p.text):''}" ${p?'disabled':''}>
       ${feedback}
-      <div class="answer-actions"><div class="answer-actions-note">${p?'Bekijk de schrijfwijze en ga verder.':'Gebruik het Japanse handschrifttoetsenbord van iPadOS.'}</div><div style="display:flex;gap:8px">${p?`<button class="button primary" data-action="next">${quiz.pos+1===quiz.queue.length?'Bekijk score':'Volgende vraag'} ${ico('arrow')}</button>`:`<button class="button outline" data-action="skip">Overslaan</button><button class="button dark" type="submit" form="answer-form">Controleren ${ico('check')}</button>`}</div></div>
-      <div class="keyboard-hint">${ico('keyboard').replace('<svg','<svg style="width:15px;height:15px"')} Met Magic Keyboard: <span class="key">Enter</span> controleren / volgende</div>
+      <div class="answer-actions"><div style="display:flex;gap:8px">${p?`<button class="button primary" data-action="next">${quiz.pos+1===quiz.queue.length?'Bekijk score':'Volgende'} ${ico('arrow')}</button>`:`<button class="button outline" data-action="skip">Overslaan</button><button class="button dark" type="submit" form="answer-form">Controleren ${ico('check')}</button>`}</div></div>
       </section></div>`;
   }
   function renderResult() {
     if (!result) return '';
     const p=pct(result.correct,result.total);
     const wrong=result.mistakes;
-    const message=p===100?'Alles goed geschreven!':p>=80?'Heel goed gedaan!':p>=60?'Je bent goed op weg.':'Mooi geoefend. Blijf herhalen.';
-    return `<div class="result-hero"><div class="eyebrow" style="justify-content:center">${esc(result.level)} · ${esc(TYPES.find(x=>x.id===result.type)?.label)}</div><div style="margin:20px auto 0;width:50px;height:50px;color:#b77b38">${ico('trophy').replace('<svg','<svg style="width:50px;height:50px"')}</div><h1 class="page-title">${message}</h1><div class="result-circle">${p}%</div><div class="result-caption">${result.correct} van de ${result.total} antwoorden goed</div></div>
-      <div class="result-grid"><div class="panel result-stat"><strong>${result.correct}</strong><span>Goed</span></div><div class="panel result-stat"><strong>${wrong.length}</strong><span>Nog oefenen</span></div><div class="panel result-stat"><strong>${result.masteredNew}</strong><span>Nieuw beheerst</span></div></div>
-      <div class="result-actions">${wrong.length?`<button class="button primary" data-action="review-missed">Herhaal mijn fouten ${ico('reset')}</button>`:''}<button class="button outline" data-action="new-quiz">Nieuwe oefening ${ico('arrow')}</button><button class="button outline" data-nav="dashboard">Terug naar overzicht</button></div>
-      ${wrong.length?`<section class="mistakes panel"><div style="padding:21px 20px 7px"><h2 class="section-title">Deze items verdienen extra aandacht</h2><div class="section-sub">Ze krijgen voorrang bij volgende oefeningen.</div></div><div class="table-wrap"><table><thead><tr><th>Betekenis</th><th>Juiste antwoord</th><th>Jouw invoer</th></tr></thead><tbody>${wrong.map(x=>{const item=getItem(x.id);return `<tr><td>${esc(item?.[result.language]||'')}</td><td class="jp" lang="ja">${esc(item?.ja||'')}</td><td lang="ja">${esc(x.skipped?'Overgeslagen':x.text)}</td></tr>`;}).join('')}</tbody></table></div></section>`:''}`;
+    return `<div class="result-hero"><h1 class="page-title">Resultaat</h1><div class="result-caption" style="margin-top:8px">${esc(result.level)} · ${esc(TYPES.find(x=>x.id===result.type)?.label)}</div><div class="result-circle">${p}%</div><div class="result-caption">${result.correct} / ${result.total} goed</div></div>
+      <div class="result-grid"><div class="panel result-stat"><strong>${result.correct}</strong><span>Goed</span></div><div class="panel result-stat"><strong>${wrong.length}</strong><span>Fout</span></div><div class="panel result-stat"><strong>${result.masteredNew}</strong><span>Nieuw beheerst</span></div></div>
+      <div class="result-actions">${wrong.length?`<button class="button primary" data-action="review-missed">Fouten herhalen ${ico('reset')}</button>`:''}<button class="button outline" data-action="new-quiz">Nieuwe oefening ${ico('arrow')}</button><button class="button outline" data-nav="dashboard">Overzicht</button></div>
+      ${wrong.length?`<section class="mistakes panel"><div style="padding:21px 20px 7px"><h2 class="section-title">Foute antwoorden</h2></div><div class="table-wrap"><table><thead><tr><th>Betekenis</th><th>Juiste antwoord</th><th>Jouw antwoord</th></tr></thead><tbody>${wrong.map(x=>{const item=getItem(x.id);return `<tr><td>${esc(item?.nl||'')}</td><td class="jp" lang="ja">${esc(item?.ja||'')}</td><td lang="ja">${esc(x.skipped?'Overgeslagen':x.text)}</td></tr>`;}).join('')}</tbody></table></div></section>`:''}`;
   }
   function filterCatalog() {
     const q=catalog.query.trim().toLowerCase();
@@ -373,23 +406,22 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
   }
   function renderLibrary() {
     const all=inventory(db.settings.level);
-    const counts=TYPES.map(t=>`${t.label}: ${all.filter(x=>x.type===t.id).length}`).join(' · ');
+    const counts=TYPES.map(t=>`${all.filter(x=>x.type===t.id).length} ${t.label.toLowerCase()}`).join(' · ');
     const typeFilters=[['all','Alles'],...TYPES.map(t=>[t.id,t.label])];
     const statusFilters=[['all','Alle statussen'],['new','Nieuw'],['learning','Oefenen'],['almost','Bijna beheerst'],['mastered','Beheerst']];
-    return header('Jouw woordenlijst',`${counts}. Tik op een item voor je persoonlijke leergeschiedenis.`, 'Alle oefenstof')+
-      `<div class="section-head"><div class="level-row">${levelChoices()}</div><div class="switch-row">${langChoices()}</div></div>
-      <div class="catalog-toolbar"><div class="catalog-filters">${typeFilters.map(([value,label])=>`<button type="button" class="filter-pill ${catalog.type===value?'active':''}" data-filter="type" data-value="${value}">${label}</button>`).join('')}</div><div class="catalog-control"><select id="status-select" class="search-input" aria-label="Filter op beheersing" style="min-width:157px">${statusFilters.map(([value,label])=>`<option value="${value}" ${catalog.status===value?'selected':''}>${label}</option>`).join('')}</select><input id="catalog-search" type="search" class="search-input" aria-label="Zoek in woordenlijst" placeholder="Zoek betekenis of Japans..." value="${esc(catalog.query)}"></div></div>
-      <section class="panel" id="catalog-results">${catalogTable()}</section><div class="notice">N5 bevat de <strong>84</strong> en N4 de <strong>169 aanvullende Kanji</strong> uit de OpenJLPT-indeling. De woorden zijn geselecteerd op de gebruikte Kanji en de zinnen zijn samengesteld. Er bestaat geen officiële actuele volledige JLPT-lijst. Andere correcte vertalingen zijn mogelijk, vooral bij zinnen.</div>`;
+    return header('Woordenlijst',counts)+
+      `<div class="section-head">${levelChoices()}</div>
+      <div class="catalog-toolbar"><div class="catalog-filters">${typeFilters.map(([value,label])=>`<button type="button" class="filter-pill ${catalog.type===value?'active':''}" data-filter="type" data-value="${value}">${label}</button>`).join('')}</div><div class="catalog-control"><select id="status-select" class="search-input" aria-label="Filter op beheersing" style="min-width:157px">${statusFilters.map(([value,label])=>`<option value="${value}" ${catalog.status===value?'selected':''}>${label}</option>`).join('')}</select><input id="catalog-search" type="search" class="search-input" aria-label="Zoek in woordenlijst" placeholder="Zoeken…" value="${esc(catalog.query)}"></div></div>
+      <section class="panel" id="catalog-results">${catalogTable()}</section>`;
   }
   function renderSettings() {
-    return header('Instellingen en back-up','Je gegevens blijven op dit apparaat. Een account is niet nodig.', 'Jouw gegevens')+`
-      <div class="settings-layout"><section class="panel settings-panel"><div class="small-eyebrow">Gegevens veilig bewaren</div><h2 style="margin-top:10px">Back-up van je voortgang</h2><p>Je oefenresultaten, herhalingsmomenten en instellingen worden lokaal in de browser bewaard. Exporteer af en toe een back-upbestand, vooral voordat je browsergegevens wist of de app opnieuw installeert.</p>
-      <div class="settings-actions"><button class="button dark" data-action="export">${ico('download')} Exporteer back-up</button><button class="button outline" data-action="import">${ico('upload')} Importeer back-up</button><input type="file" id="backup-file" accept="application/json,.json" class="offscreen" aria-label="Back-upbestand kiezen"></div><div class="settings-footnote">Een import vervangt de bestaande voortgang. Het JSON-bestand bevat geen wachtwoorden of accountgegevens.</div></section>
-      <section class="panel settings-panel"><div class="small-eyebrow">Offline leren</div><h2 style="margin-top:10px">Zonder abonnement of cloud</h2><p>De oefenstof, slimme herhaling en beoordeling draaien op je eigen apparaat. De Japanse handschriftinvoer is onderdeel van iPadOS, niet van deze app.</p>
-      <div class="notice"><strong>Zo gebruik je hem als offline app:</strong> zet de bestanden gratis op een HTTPS-website, open die op je iPad en kies in het deelmenu ‘Zet op beginscherm’. Na de eerste succesvolle installatie kan de app zonder internet worden geopend.</div>
-      <div class="settings-footnote">Ook staand en liggend bruikbaar · Geen externe fonts · Geen trackers · Geen online AI-beoordeling.</div></section>
-      <section class="panel settings-panel"><div class="small-eyebrow">Inhoud</div><h2 style="margin-top:10px">Oefenstof</h2><p>Deze versie bevat <strong>${DATA.length} items</strong>, verspreid over vijf JLPT-niveaus: <strong>${DATA.filter(x=>x.type==='kanji').length} Kanji</strong>, <strong>${DATA.filter(x=>x.type==='words').length} woorden</strong> en <strong>${DATA.filter(x=>x.type==='sentences').length} zinnen</strong>.</p><p>De zinnen hebben een vooraf vastgelegd modelantwoord. Bij andere correcte formuleringen kun je zelf <em>Dit is ook correct</em> kiezen. Japanse Kanji worden als tekst gecontroleerd, niet op streepvolgorde.</p><div class="settings-footnote">N5/N4: <a href="https://github.com/evanclan/OpenJLPT" rel="noopener noreferrer" target="_blank">OpenJLPT</a> (kanjilijst; CC BY-SA 4.0). Nederlandse betekenissen, geselecteerde woorden en oefenzinnen zijn voor Kaku bewerkt en aangevuld. Niveaus zijn benaderingen; het officiële JLPT publiceert geen actuele complete vocabulairelijsten. Versie 1.1.</div></section>
-      <section class="panel settings-panel"><div class="small-eyebrow">Opnieuw beginnen</div><h2 style="margin-top:10px">Voortgang wissen</h2><p>Wil je opnieuw beginnen? Dit wist alleen de opgeslagen scores en instellingen, niet de oefenstof. Exporteer eerst een back-up als je de voortgang later wilt terugzetten.</p><div class="settings-actions"><button class="button danger" data-action="clear-progress">${ico('reset')} Wis mijn voortgang</button></div></section></div>`;
+    return header('Instellingen')+`
+      <div class="settings-layout">
+      <section class="panel settings-panel"><h2>Back-up</h2><p>Bewaar je voortgang voordat je de app verwijdert of browsergegevens wist.</p>
+      <div class="settings-actions"><button class="button dark" data-action="export">${ico('download')} Exporteer</button><button class="button outline" data-action="import">${ico('upload')} Importeer</button><input type="file" id="backup-file" accept="application/json,.json" class="offscreen" aria-label="Back-upbestand kiezen"></div><div class="settings-footnote">Importeren vervangt je huidige voortgang.</div></section>
+      <section class="panel settings-panel"><h2>Oefenstof</h2><p><strong>${DATA.length} items</strong> · ${DATA.filter(x=>x.type==='kanji').length} Kanji · ${DATA.filter(x=>x.type==='words').length} woorden · ${DATA.filter(x=>x.type==='sentences').length} zinnen.</p>
+      <div class="settings-footnote">N5/N4-bron: <a href="https://github.com/evanclan/OpenJLPT" rel="noopener noreferrer" target="_blank">OpenJLPT</a> (CC BY-SA 4.0). JLPT-niveaus zijn indicatief.</div></section>
+      <section class="panel settings-panel"><h2>Voortgang wissen</h2><div class="settings-actions"><button class="button danger" data-action="clear-progress">${ico('reset')} Wis voortgang</button></div></section></div>`;
   }
   function relatedExamples(item) {
     if (!['kanji','words'].includes(item.type) || !['N5','N4'].includes(item.level)) return '';
@@ -405,7 +437,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     const p=getP(item.id);const dialog=document.querySelector('#detail-dialog');
     document.querySelector('#detail-dialog-content').innerHTML=`<div class="dialog-inner"><div class="dialog-top"><div><span class="small-eyebrow">${esc(item.level)} · ${esc(TYPES.find(t=>t.id===item.type)?.label)}</span></div><button type="button" class="icon-btn" data-action="close-dialog" aria-label="Sluiten">${ico('close')}</button></div>
       <div class="dialog-jp" lang="ja">${esc(item.ja)}</div><div class="dialog-reading" lang="ja">${esc(item.reading)}</div><div class="dialog-meaning">${esc(byLang(item))}</div>${statusChip(p)}
-      <div class="dialog-stats"><div><b>${p.attempts}</b><span>Keer geoefend</span></div><div><b>${p.correct}</b><span>Goed</span></div><div><b>${p.streak}</b><span>Goed op rij</span></div></div>${relatedExamples(item)}<div class="settings-footnote">${p.attempts?`Laatst geoefend: ${dateFor(p.last)} · Opnieuw oefenen: ${dateFor(p.due)}`:'Nog niet eerder geoefend.'}</div>
+      <div class="dialog-stats"><div><b>${p.attempts}</b><span>Keer geoefend</span></div><div><b>${p.correct}</b><span>Goed</span></div><div><b>${p.streak}</b><span>Goed op rij</span></div></div>${relatedExamples(item)}<div class="settings-footnote">${p.attempts?`Laatst: ${dateFor(p.last)} · Herhalen: ${dateFor(p.due)}`:'Nog niet geoefend'}</div>
       <div style="margin-top:25px;display:flex;justify-content:flex-end"><button class="button outline mini" data-action="close-dialog">Sluiten</button></div></div>`;
     dialog.showModal();
   }
@@ -419,16 +451,11 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     document.querySelector('main')?.style.removeProperty('--writing-push');
     const main=document.querySelector('#main');
     main.innerHTML=({ dashboard:renderDashboard, practice:renderPractice, library:renderLibrary, settings:renderSettings, quiz:renderQuiz, result:renderResult }[view] || renderDashboard)();
-    document.querySelector('#breadcrumb').textContent=({dashboard:'Mijn overzicht',practice:'Nieuwe oefening',library:'Woordenlijst',settings:'Instellingen',quiz:'Aan het oefenen',result:'Oefening afgerond'})[view]||'Kaku';
+
     document.querySelectorAll('[data-nav]').forEach(btn=>btn.classList.toggle('is-active',btn.dataset.nav===view));
     if(view==='quiz' && !quiz.pending) document.querySelector('#answer-input')?.focus({preventScroll:true});
     syncWritingMode();
-    updateConnection();
-  }
-  function updateConnection() {
-    const el=document.querySelector('#connection-status');
-    const local=location.protocol==='file:';
-    el.innerHTML=`<span class="connection-dot"></span>${!storageAvailable?'Opslag mogelijk niet beschikbaar':local?'Lokale HTML-modus':navigator.serviceWorker?.controller?'Offline geïnstalleerd':'Offline PWA beschikbaar'}`;
+
   }
   function downloadBackup() {
     const backup={app:'Kaku',exportedAt:new Date().toISOString(),version:1,settings:db.settings,progress:db.progress,customAnswers:db.customAnswers,sessions:db.sessions};
@@ -454,7 +481,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
       }
       const incoming=data.settings||{};
       db.settings={
-        language:['nl','en'].includes(incoming.language)?incoming.language:'nl',
+         language:'nl',
         level:LEVELS.includes(incoming.level)?incoming.level:'N4',
         type:TYPES.some(x=>x.id===incoming.type)?incoming.type:'words',
         count:[5,10,25,50].includes(Number(incoming.count))?Number(incoming.count):10
@@ -626,11 +653,11 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
   document.querySelector('#detail-dialog').addEventListener('click',e=>{
     if(e.target.id==='detail-dialog')e.target.close();
   });
-  document.querySelector('#today-label').textContent=new Intl.DateTimeFormat('nl-NL',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+
   document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=ico(el.dataset.icon));
   if('serviceWorker' in navigator&&['http:','https:'].includes(location.protocol)){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(updateConnection).catch(()=>{}));
-    navigator.serviceWorker.addEventListener('controllerchange',updateConnection);
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+
   }
   render();
 })();

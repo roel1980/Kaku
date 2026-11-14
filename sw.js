@@ -1,5 +1,5 @@
-/* Kaku 1.3 — updateveilige offline cache */
-const CACHE = 'kaku-offline-v4-submit-dock';
+/* Kaku 1.4 — updateveilige offline cache */
+const CACHE = 'kaku-offline-v5-clean-ui';
 const APP_FILES = ['./', './index.html', './manifest.webmanifest', './icon.png'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(APP_FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('kaku-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
