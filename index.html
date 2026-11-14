@@ -19,6 +19,58 @@
 @media (max-width:730px){.sidebar{display:block;padding-bottom:8px}.brand-block{margin-bottom:15px}.side-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}.nav-item{flex-direction:column;gap:5px;padding:8px 3px;font-size:10px;justify-content:center;text-align:center;white-space:nowrap}.topbar{display:none}main{padding:25px 15px 48px}.page-head{margin-bottom:20px}.page-title{font-size:29px}.dashboard-layout,.setup-grid,.quiz-grid,.settings-layout,.subgrid{grid-template-columns:1fr}.stat-grid{gap:9px}.stat-card{padding:14px 12px}.stat-main{font-size:21px}.stat-icon{margin-bottom:16px}.hero{min-height:235px;padding:26px 24px}.hero:after{font-size:240px}.setup-panel{padding:21px}.setup-aside{order:-1}.setup-aside-heading{padding:15px 18px}.setup-aside-heading:after{font-size:95px}.setup-aside-heading p{margin:5px 0}.setup-aside-body{padding:16px 18px}.estimate-row{padding:7px 0}.setup-start{margin-top:14px}.quiz-grid{gap:12px}.question-panel{min-height:180px;padding:19px}.question-word{font-size:33px}.question-word.sentence{font-size:22px}.answer-panel{min-height:390px;padding:18px}.answer-input{min-height:166px}.type-grid{gap:7px}.type-card{padding:12px 9px;min-height:128px}.catalog-table th,.catalog-table td{padding:12px 9px}.catalog-table .ja{font-size:19px}.catalog-table .reading{font-size:10px}.catalog-toolbar{display:block}.catalog-control{margin-top:13px}.search-input{width:100%}.result-grid{gap:6px}.result-stat{padding:17px 7px}.result-stat strong{font-size:23px}.mistakes td,.mistakes th{padding:10px 7px}.today-label{display:none}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
+
+/* Kaku 1.2 — compacte iPadOS-schrijfinvoer.
+   Het systeemhandschriftpaneel bedekt de onderste helft van het scherm;
+   deze modus houdt de vraag en het invoerveld samen in het zicht. */
+body.writing-mode .topbar{display:none}
+body.writing-mode main{padding-top:12px;padding-bottom:28px}
+body.writing-mode .quiz-head{margin-bottom:8px;align-items:center}
+body.writing-mode .quiz-head .page-title{font-size:19px;letter-spacing:-.35px}
+body.writing-mode .quiz-head .eyebrow{font-size:10px;margin-bottom:3px}
+body.writing-mode .quiz-head .button{min-height:34px;padding:7px 10px;font-size:11px}
+body.writing-mode .quiz-topline{margin-bottom:5px;font-size:11px}
+body.writing-mode .quiz-progress{height:5px;margin-bottom:10px}
+body.writing-mode .quiz-grid{gap:11px;align-items:stretch}
+body.writing-mode .question-panel{min-height:158px;padding:14px 16px}
+body.writing-mode .question-label{font-size:10px}
+body.writing-mode .question-centered{padding:4px 0;gap:6px}
+body.writing-mode .question-word{font-size:clamp(23px,2.7vw,32px);line-height:1.3}
+body.writing-mode .question-word.sentence{font-size:clamp(17px,2vw,22px);line-height:1.35}
+body.writing-mode .question-instruction{font-size:10px;line-height:1.4}
+body.writing-mode .question-bottom{display:none}
+body.writing-mode .answer-panel{min-height:158px;padding:13px 16px}
+body.writing-mode .answer-label{font-size:12px}
+body.writing-mode .answer-help{font-size:10px}
+body.writing-mode .answer-input{flex:none;height:74px;min-height:74px;max-height:92px;resize:none;margin-top:9px;padding:10px 13px;font-size:clamp(24px,2.9vw,32px);line-height:1.25}
+body.writing-mode .answer-input::placeholder{font-size:13px}
+body.writing-mode .answer-actions{margin-top:8px;gap:6px}
+body.writing-mode .answer-actions .button{min-width:0;min-height:35px;padding:7px 12px;font-size:11px}
+body.writing-mode .answer-actions-note,body.writing-mode .keyboard-hint{display:none}
+/* In staand formaat blijven de vraag en het antwoord boven elkaar. */
+@media (orientation:portrait){
+  body.writing-mode .sidebar{display:none}
+  body.writing-mode .quiz-grid{grid-template-columns:minmax(0,1fr)}
+  body.writing-mode main{padding:8px 18px 25px}
+  body.writing-mode .quiz-head{margin-bottom:6px}
+  body.writing-mode .quiz-head .page-title{font-size:17px}
+  body.writing-mode .quiz-head .eyebrow{margin-bottom:1px}
+  body.writing-mode .quiz-progress{margin-bottom:7px}
+  body.writing-mode .question-panel{min-height:105px;padding:9px 13px}
+  body.writing-mode .question-centered{padding:1px 0;gap:2px}
+  body.writing-mode .question-word{font-size:23px;line-height:1.25}
+  body.writing-mode .question-word.sentence{font-size:17px;line-height:1.3}
+  body.writing-mode .question-instruction{font-size:10px}
+  body.writing-mode .answer-panel{min-height:151px;padding:10px 13px}
+  body.writing-mode .answer-input{height:68px;min-height:68px;max-height:78px;margin-top:6px}
+  body.writing-mode .answer-actions{margin-top:6px}
+}
+@media (max-height:700px) and (orientation:landscape){
+  body.writing-mode .sidebar{padding-top:15px}
+  body.writing-mode .quiz-head .page-title{font-size:17px}
+  body.writing-mode .question-panel,body.writing-mode .answer-panel{min-height:140px}
+}
+
 </style>
   <title>Kaku — Japans schrijven</title>
 </head>
@@ -35,7 +87,7 @@
         <button type="button" data-nav="library" class="nav-item"><span class="nav-icon" data-icon="book"></span><span>Woordenlijst</span></button>
         <button type="button" data-nav="settings" class="nav-item"><span class="nav-icon" data-icon="settings"></span><span>Instellingen</span></button>
       </nav>
-      <div class="side-bottom"><div class="connection" id="connection-status"><span class="connection-dot"></span>Offline beschikbaar na installatie</div><div class="side-caption">Kaku 1.1 · N5 & N4 uitgebreid</div></div>
+      <div class="side-bottom"><div class="connection" id="connection-status"><span class="connection-dot"></span>Offline beschikbaar na installatie</div><div class="side-caption">Kaku 1.2 · Schrijfmodus verbeterd</div></div>
     </aside>
     <div class="workspace">
       <header class="topbar"><div class="topbar-breadcrumb"><span id="breadcrumb">Mijn overzicht</span></div><div class="topbar-actions"><span class="today-label" id="today-label"></span><span class="avatar" aria-hidden="true">日</span></div></header>
@@ -360,11 +412,14 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     quiz=null;result=null;view=v;render();window.scrollTo?.(0,0);
   }
   function render() {
+    // Opnieuw bepalen na elke vraag: feedback mag niet in de compacte modus blijven.
+    document.body.classList.remove('writing-mode');
     const main=document.querySelector('#main');
     main.innerHTML=({ dashboard:renderDashboard, practice:renderPractice, library:renderLibrary, settings:renderSettings, quiz:renderQuiz, result:renderResult }[view] || renderDashboard)();
     document.querySelector('#breadcrumb').textContent=({dashboard:'Mijn overzicht',practice:'Nieuwe oefening',library:'Woordenlijst',settings:'Instellingen',quiz:'Aan het oefenen',result:'Oefening afgerond'})[view]||'Kaku';
     document.querySelectorAll('[data-nav]').forEach(btn=>btn.classList.toggle('is-active',btn.dataset.nav===view));
     if(view==='quiz' && !quiz.pending) document.querySelector('#answer-input')?.focus({preventScroll:true});
+    syncWritingMode();
     updateConnection();
   }
   function updateConnection() {
@@ -412,6 +467,79 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
       save();render();showToast('Je voortgang is hersteld.');
     }).catch(e=>showToast(e.message||'Kon back-up niet openen.'));
   }
+
+  // Apple Pencil schrijft via het gewone iPadOS-toetsenbord.
+  // Het handschriftpaneel is van iPadOS zelf en kan niet vanuit de pagina worden verkleind.
+  // Maak daarom het zichtbare quizgedeelte compact en schuif het in beeld.
+  const touchKeyboardDevice = (navigator.maxTouchPoints || 0) > 0 ||
+    (window.matchMedia && matchMedia('(pointer:coarse)').matches);
+  let writingScrollToken=0;
+  function scrollWritingIntoView() {
+    if (!document.body.classList.contains('writing-mode')) return;
+    const prompt=document.querySelector('.question-word');
+    const answerLabel=document.querySelector('.answer-label-row');
+    const input=document.querySelector('#answer-input');
+    if (!prompt || !answerLabel || !input) return;
+    const vv=window.visualViewport;
+    const visibleTop=vv ? vv.offsetTop : 0;
+    const visibleBottom=visibleTop+(vv ? vv.height : window.innerHeight);
+    const promptBox=prompt.getBoundingClientRect();
+    const labelBox=answerLabel.getBoundingClientRect();
+    const inputBox=input.getBoundingClientRect();
+    const groupTop=Math.min(promptBox.top,labelBox.top)-12;
+    const groupBottom=Math.max(promptBox.bottom,inputBox.bottom)+14;
+    const available=visibleBottom-visibleTop;
+    // Wanneer beide velden niet tegelijk passen, krijgt het antwoordveld voorrang.
+    let shift=0;
+    if(groupBottom>visibleBottom) shift=groupBottom-visibleBottom;
+    else if(groupTop<visibleTop+8 && groupBottom-groupTop<available-12)
+      shift=groupTop-visibleTop-8;
+    if(Math.abs(shift)>2) window.scrollBy(0,shift);
+  }
+  function scheduleWritingScroll() {
+    const token=++writingScrollToken;
+    requestAnimationFrame(()=>{
+      if(token===writingScrollToken) scrollWritingIntoView();
+    });
+    // iPadOS opent de handschriftinvoer met een animatie. Meet meerdere keren.
+    for(const ms of [100,260,510]) setTimeout(()=>{
+      if(token===writingScrollToken) scrollWritingIntoView();
+    },ms);
+  }
+  function syncWritingMode() {
+    const input=document.querySelector('#answer-input');
+    const active=!!(touchKeyboardDevice && view==='quiz' && quiz && !quiz.pending &&
+      input && document.activeElement===input);
+    document.body.classList.toggle('writing-mode',active);
+    if(active) scheduleWritingScroll();
+    else ++writingScrollToken;
+  }
+  document.addEventListener('focusin',e=>{
+    if(e.target?.id==='answer-input') syncWritingMode();
+  });
+  document.addEventListener('focusout',e=>{
+    if(e.target?.id==='answer-input') {
+      // Wacht op de klik op Controleren/Overslaan; geen verspringende knop tijdens tikken.
+      setTimeout(()=>{
+        if(document.activeElement?.id!=='answer-input' && view==='quiz') {
+          document.body.classList.remove('writing-mode');
+          ++writingScrollToken;
+        }
+      },340);
+    }
+  });
+  if(window.visualViewport) {
+    window.visualViewport.addEventListener('resize',()=>{
+      if(document.body.classList.contains('writing-mode')) scheduleWritingScroll();
+    });
+    window.visualViewport.addEventListener('scroll',()=>{
+      if(document.body.classList.contains('writing-mode')) scheduleWritingScroll();
+    });
+  }
+  window.addEventListener('orientationchange',()=>{
+    if(document.body.classList.contains('writing-mode')) scheduleWritingScroll();
+  });
+
   document.addEventListener('click',e=>{
     const nav=e.target.closest('[data-nav]');if(nav){setView(nav.dataset.nav);return;}
     const setting=e.target.closest('[data-setting]');if(setting){setSetting(setting.dataset.setting,setting.dataset.value);return;}
