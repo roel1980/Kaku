@@ -316,3 +316,326 @@ body.quiz-view.writing-mode #main{padding-top:0!important}
  body.quiz-view.writing-mode .answer-input{height:56px;min-height:56px;margin-top:5px}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* ================================================================
+   KAKU 4.1 — disciplined layered-paper UI, no stretched card artwork.
+   The notebook and the individual navigation tabs remain image assets;
+   text, controls, cards, borders and tables are responsive CSS/HTML.
+   ================================================================ */
+:root{--paper:#fff9f0;--paper-edge:#e9ceba;--paper-ink:#674838}
+.decor,.decor-sakura,.decor-dango,.decor-kopje{display:none!important}
+.app-header{position:relative!important;z-index:20!important;margin-bottom:19px!important}
+.app-header::after{
+  content:"";position:absolute;left:0;right:0;bottom:-2px;height:17px;
+  background:linear-gradient(#fff6ed 0%,#fff7ec 100%);
+  box-shadow:0 -1px 0 rgba(222,181,147,.42);
+  pointer-events:none;z-index:5;
+}
+.book-tabs{position:relative;z-index:2;align-self:end}
+.brand-button{position:relative;z-index:8;max-width:285px;height:88px;margin-left:-16px}
+.brand-button img{width:100%;height:100%;max-height:none;object-fit:contain}
+.tab-item{color:#644332;font-weight:850}
+.tab-item span{transform:translateY(-2px);letter-spacing:-.15px}
+.tab-item.is-active{transform:translateY(-5px)}
+/* Automatic sizing: no label clipping, even after level changes. */
+.section-title,.recent-panel>.section-title{
+  display:inline-flex;min-width:0;width:max-content;max-width:100%;min-height:48px;
+  padding:10px 23px;margin:0;white-space:normal;overflow:visible;
+  text-align:center;line-height:1.25;justify-content:center;align-items:center;
+  border:2px solid #edbac9;border-radius:15px;color:#6f4b40;
+  background:linear-gradient(180deg,#ffe9f0,#fbd7e2)!important;
+  box-shadow:0 3px 0 #eec2ce, inset 0 1px 0 #fff9fb;
+  font-size:clamp(17px,1.65vw,20px);font-weight:860;
+}
+.section-title:before{display:none}
+.recent-panel>.section-title{
+  border-color:#e9be6b;background:linear-gradient(180deg,#fff0b6,#ffe0a0)!important;
+  box-shadow:0 3px 0 #eed09e,inset 0 1px 0 #fff9e3;
+  margin:0 0 10px;
+}
+.recent-panel>.section-title:before{display:none}
+.small-eyebrow{
+  width:max-content;max-width:100%;min-width:0;white-space:nowrap;
+  padding:8px 16px;line-height:1.2;min-height:35px;
+  background:linear-gradient(180deg,#f5e7ff,#e9d8f7)!important;
+  border:1.5px solid #ddc4ed;border-radius:12px;
+  box-shadow:0 2px 0 #e8d5ef, inset 0 1px 0 #fff;
+  color:#7e5b8b;font-weight:860;font-size:12px;letter-spacing:0;
+}
+.panel-topline{gap:13px}
+.panel-topline .status{flex:none}
+.dashboard-layout{gap:22px}
+.hero{background-size:100% 100%!important}
+.hero-cat{right:-2%;width:51%;max-height:100%}
+.progress-summary,.recent-panel,.settings-panel,.result-hero,.result-stat,.mistakes{
+  background:linear-gradient(180deg,#fffefa,#fff9f2)!important;
+  border:1.5px solid #edd9c9!important;
+  border-radius:23px!important;
+  box-shadow:0 7px 14px rgba(130,87,60,.11),inset 0 2px 0 rgba(255,255,255,.85)!important;
+}
+.progress-summary{padding:25px 26px}
+.recent-panel{min-height:140px;padding:20px 24px}
+.recent-panel .activity-row{border-bottom:1px solid #edddce}
+.dashboard-version{padding:12px 0 0;color:#957e70}
+/* One clear shadow and one set of dashed seams, never pre-drawn images inside cards. */
+.stat-card{
+  display:grid;grid-template-columns:69px minmax(0,1fr);
+  grid-template-rows:58px auto 13px auto;
+  gap:5px 8px;
+  min-width:0;min-height:190px;padding:16px 20px 15px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(to bottom,#e7f6ed 0 38%,#fffaf3 38% 100%)!important;
+  border:1.6px solid #e7d4c3!important;border-radius:22px!important;
+  box-shadow:0 6px 14px rgba(126,83,57,.12),inset 0 1px 0 #fff!important;
+}
+.stat-card::before{
+  content:"";position:absolute;inset:8px;border:1.4px dashed #ebcbb9;
+  border-radius:15px;pointer-events:none;
+}
+.stat-card:nth-child(2){background:linear-gradient(to bottom,#f2e8fa 0 38%,#fffaf3 38% 100%)!important}
+.stat-card:nth-child(3){background:linear-gradient(to bottom,#ffeddd 0 38%,#fffaf3 38% 100%)!important}
+.stat-icon{grid-column:1;grid-row:1;display:grid;place-items:center;width:66px;height:60px;margin:0;background:transparent}
+.stat-icon img{width:67px;height:62px;object-fit:contain}
+.stat-label{grid-column:2;grid-row:1;align-self:center;font-size:18px;font-weight:850;margin:0}
+.stat-main{grid-column:1/-1;grid-row:2;margin:4px 0 2px;font-size:29px;line-height:1.12}
+.stat-card .progress-track{grid-column:1/-1;grid-row:3;align-self:center;margin:1px 0;height:11px}
+.stat-foot{grid-column:1/-1;grid-row:4;margin:0;align-self:end}
+.stat-foot span{font-size:12px}
+/* Native rounded controls are resolution-independent; separate tab art is untouched. */
+.button,.button.primary,.button.dark,.button.outline,.button.mini,.hero .button{
+  background-image:none!important;
+  background:linear-gradient(180deg,#fffdf7,#fff0e4)!important;
+  border:2px solid #e8cbb8!important;border-radius:999px!important;
+  box-shadow:0 3px 0 rgba(199,148,113,.23),inset 0 1px 0 #fff!important;
+  color:#694837;min-height:44px;
+}
+.button.primary,.button.dark,.hero .button{
+  background:linear-gradient(180deg,#ffefbd,#ffd98a)!important;
+  border-color:#edb85d!important;
+  color:#67412e;
+}
+.button:active,.button.primary:active,.button.dark:active,.hero .button:active{
+  background-image:none!important;transform:translateY(2px);box-shadow:inset 0 2px 3px #c8966426!important;
+}
+.button:hover{filter:brightness(1.018)}
+.button.danger{color:#a54f62!important;background:linear-gradient(180deg,#fff5f3,#ffe6e9)!important}
+/* Setup should float on the book's paper, not inside an oversized panel. */
+.setup-grid{display:block;max-width:none}
+.setup-panel{
+  display:grid;gap:29px;max-width:100%;padding:6px 0 22px!important;margin:0;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;
+}
+.setup-panel::before,.setup-panel::after{display:none!important}
+.setup-field{max-width:100%}
+.setup-panel>.setup-start{
+  min-width:254px;width:max-content;min-height:58px;margin:5px 0 0;padding:12px 30px;
+  justify-self:start;align-self:start;font-size:16px;
+}
+.field-label{font-size:16px;margin-bottom:13px}
+.type-grid{gap:16px}
+.type-card,.type-card[data-value="words"],.type-card[data-value="sentences"]{
+  min-height:147px;gap:8px;padding:17px 21px;overflow:hidden;
+  background:linear-gradient(to bottom,#e8f7ee 0 52%,#fffaf2 52% 100%)!important;
+  border:1.7px solid #ead4c3!important;border-radius:21px!important;
+  box-shadow:0 5px 12px #9268491a, inset 0 1px 0 #fff!important;
+}
+.type-card[data-value="words"]{background:linear-gradient(to bottom,#f2e8fa 0 52%,#fffaf2 52% 100%)!important}
+.type-card[data-value="sentences"]{background:linear-gradient(to bottom,#ffebdc 0 52%,#fffaf2 52% 100%)!important}
+.type-card.active{border:3px solid #58b4a4!important;outline:0!important;box-shadow:0 0 0 3px #e3f4ea,0 5px 12px #92684920!important;padding:15px 19px}
+.type-card-icon{height:70px;width:76px}
+.type-card-icon img{height:72px;width:76px;object-fit:contain}
+.type-card strong{font-size:18px;margin-top:auto;color:#674739}
+/* Text remains live in the selected tab; remove decorative subtitle. */
+.type-card .type-desc{display:none}
+/* Quiz: Stop is on the leather cover and the title is intentionally absent. */
+.quiz-stop-button{
+  display:none;position:absolute;top:35px;right:clamp(55px,8.2vw,134px);z-index:90;
+  min-height:42px;padding:9px 17px 9px 13px;
+  border:1.5px solid #f9e9d1;border-radius:999px;
+  background:linear-gradient(180deg,#fffef9,#f5e8dc);color:#624538;
+  box-shadow:0 3px 0 #9e79634d, inset 0 1px 0 #fff;
+  font-size:13px;font-weight:850;align-items:center;gap:8px;
+}
+body.quiz-view .quiz-stop-button{display:inline-flex}
+.quiz-stop-button .stop-cross{font-size:21px;font-weight:500;line-height:14px}
+body.quiz-view .book-page{padding-top:123px}
+body.quiz-view .quiz-head{display:none!important}
+body.quiz-view .quiz-topline{margin:0 0 9px}
+body.quiz-view .quiz-progress{margin-bottom:15px}
+.question-panel,.answer-panel{
+  background:linear-gradient(180deg,#f2fbf4,#ebf7f1)!important;
+  border:1.6px solid #dbe8dd!important;border-radius:22px!important;
+  box-shadow:0 6px 12px rgba(123,88,59,.09),inset 0 1px 0 #fff!important;
+}
+.answer-panel{background:linear-gradient(180deg,#fffefa,#fff7ee)!important;border-color:#eddbcd!important}
+body.quiz-view.writing-mode .book-page{padding-top:115px!important}
+/* Library: real table with fixed column sizing; no stretched asset or pseudo seams. */
+.catalog-filters-shell{display:grid;gap:18px;margin:8px 0 19px}
+.catalog-level-row{margin:0}
+.catalog-toolbar{display:flex;align-items:center;justify-content:space-between;gap:13px;flex-wrap:wrap;margin:0}
+.catalog-filters{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+.catalog-control{display:flex;gap:9px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.search-input{min-height:44px;height:44px;background:#fffdf7;border:1.5px solid #e7d4c6;border-radius:13px;padding:9px 13px;color:#674838}
+.catalog-control select{min-width:164px}
+.catalog-control input[type="search"]{min-width:190px;flex:1}
+.catalog-sheet{
+  width:100%;background:#fffbf6;border:1.5px solid #e6d2c2;
+  border-radius:18px;overflow:hidden;
+  box-shadow:0 6px 16px rgba(130,89,60,.09),inset 0 1px 0 #fff;
+}
+.catalog-sheet .table-wrap{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+.catalog-table{width:100%;table-layout:fixed;border-collapse:collapse;white-space:normal;background:transparent!important}
+.catalog-table col.col-meaning{width:34%}
+.catalog-table col.col-japanese{width:32%}
+.catalog-table col.col-status{width:22%}
+.catalog-table col.col-score{width:12%}
+.catalog-table th{
+  background:#fbefe4!important;color:#8d7463;font-size:12px;
+  font-weight:840;padding:16px 19px;text-align:left;border-bottom:1px solid #ead9c9;
+}
+.catalog-table td{
+  background:transparent!important;padding:18px 19px;vertical-align:middle;
+  border-bottom:1px solid #efe3d9!important;font-size:14px;line-height:1.45;
+  overflow-wrap:anywhere;
+}
+.catalog-table tbody tr{background:transparent!important;cursor:pointer}
+.catalog-table tbody tr:nth-child(even){background:#fff9f2!important}
+.catalog-table tbody tr:hover,.catalog-table tbody tr:focus{background:#eaf7f1!important;outline:none}
+.catalog-table tbody tr:last-child td{border-bottom:0!important}
+.catalog-table .meaning{font-weight:750;color:#664a3b}
+.catalog-table .ja{font-family:-apple-system,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;font-size:24px;display:block;line-height:1.4;color:#553d34}
+.catalog-table .reading{display:block;font-size:11px;margin-top:3px;color:#a58f80;line-height:1.4}
+.catalog-score{color:#887265;white-space:nowrap}
+.catalog-sheet .status{padding:6px 9px;white-space:nowrap}
+.catalog-sheet .loadmore-wrap{border-top:1px solid #e7d8ca;padding:16px 20px;background:#fffbf7}
+/* Results and settings should be actual scalable paper surfaces. */
+.result-hero,.result-stat,.mistakes,.settings-panel{background:#fffbf5!important;border:1.5px solid #ead5c4!important}
+.result-hero{padding:29px 25px}
+.result-stat{border-radius:17px!important}
+.settings-panel{min-height:145px}
+/* Portrait iPad */
+@media (orientation:portrait),(max-width:850px){
+ .book-page{padding-top:67px}
+ .app-header{grid-template-columns:1fr;gap:0}
+ .app-header::after{height:15px}
+ .brand-button{height:72px;width:240px;max-width:66%;margin-left:-8px}
+ .book-tabs{height:75px;margin-top:-4px}
+ .tab-item{height:74px}
+ .tab-item span{transform:translateY(-1px)}
+ .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .stat-card:last-child{grid-column:1/-1}
+ .dashboard-layout{grid-template-columns:1fr}
+ .quiz-stop-button{top:29px;right:clamp(44px,7vw,72px)}
+ body.quiz-view .book-page{padding-top:104px}
+ body.quiz-view.writing-mode .book-page{padding-top:99px!important}
+ .catalog-toolbar{align-items:stretch;flex-direction:column}
+ .catalog-control{margin-left:0;width:100%;justify-content:flex-start}
+ .catalog-control select{min-width:165px}
+ .catalog-control input[type="search"]{flex:1}
+ .catalog-table th,.catalog-table td{padding-left:13px;padding-right:13px}
+ .catalog-table col.col-meaning{width:34%}
+ .catalog-table col.col-japanese{width:30%}
+ .catalog-table col.col-status{width:24%}
+ .catalog-table col.col-score{width:12%}
+}
+@media (max-width:560px){
+ .book-page{padding-top:52px}
+ .brand-button{height:58px;width:192px;max-width:72%}
+ .app-header::after{height:11px}
+ .book-tabs{height:62px}
+ .tab-item{height:63px}
+ .tab-item span{font-size:11px}
+ .section-title{font-size:16px;padding:8px 14px;min-height:43px}
+ .small-eyebrow{font-size:10px;padding:7px 9px;min-height:31px}
+ .progress-summary{padding:17px 16px}
+ .stat-grid{grid-template-columns:1fr}
+ .stat-card:last-child{grid-column:auto}
+ .stat-card{min-height:157px;grid-template-rows:45px auto 11px auto;padding:11px 14px}
+ .stat-icon{width:52px;height:45px}
+ .stat-icon img{width:55px;height:50px}
+ .stat-label{font-size:16px}
+ .type-grid{gap:7px}
+ .type-card,.type-card[data-value="words"],.type-card[data-value="sentences"]{padding:10px 9px;min-height:125px}
+ .type-card-icon{height:51px;width:50px}.type-card-icon img{height:55px;width:56px}
+ .type-card strong{font-size:14px}
+ .setup-panel{gap:20px}
+ .setup-panel>.setup-start{min-width:210px;width:auto;min-height:56px;font-size:14px;padding:11px 21px}
+ .catalog-sheet{border-radius:15px}
+ .catalog-control{display:grid;grid-template-columns:1fr}
+ .catalog-control select,.catalog-control input[type="search"]{min-width:0;width:100%}
+ .catalog-table thead,.catalog-table colgroup{display:none}
+ .catalog-table tbody{display:block}
+ .catalog-table tbody tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 12px;padding:14px 15px;border-bottom:1px solid #eadacf}
+ .catalog-table tbody tr:last-child{border-bottom:0}
+ .catalog-table td{border:0!important;padding:0!important}
+ .catalog-table td:nth-child(1){grid-column:1;grid-row:2}
+ .catalog-table td:nth-child(2){grid-column:1;grid-row:1}
+ .catalog-table td:nth-child(3){grid-column:2;grid-row:1}
+ .catalog-table td:nth-child(4){grid-column:2;grid-row:2;justify-self:end}
+ .catalog-table .ja{font-size:23px}
+ .catalog-table .reading{font-size:10px}
+ .quiz-stop-button{top:19px;right:35px;min-height:35px;padding:7px 10px;font-size:11px}
+ body.quiz-view .book-page{padding-top:86px}
+ body.quiz-view.writing-mode .book-page{padding-top:83px!important}
+}
+
+/* Final 4.1 visual corrections: tabs behind paper, not a white overlay stripe. */
+.app-header::after{display:none!important}
+.book-tabs{transform:translateY(-12px)}
+.tab-item{clip-path:inset(0 0 14px 0)}
+/* Long collections scroll on the paper. The leather cover has a constant,
+   sensible aspect ratio and is never stretched into a six-thousand-pixel strip. */
+body[data-view="library"] .book-page,
+body[data-view="result"] .book-page{
+  display:flex;flex-direction:column;
+  height:calc(100dvh - 24px);min-height:730px;
+  overflow:hidden;
+}
+body[data-view="library"] .app-header,
+body[data-view="result"] .app-header{flex:none}
+body[data-view="library"] #main,
+body[data-view="result"] #main{
+  flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:#d8bba7 transparent;
+  padding-right:8px!important;
+}
+body[data-view="library"] .notebook-visual,
+body[data-view="result"] .notebook-visual{height:100%}
+@media(orientation:portrait),(max-width:850px){
+ .book-tabs{transform:translateY(-9px)}
+ .tab-item{clip-path:inset(0 0 12px 0)}
+ body[data-view="library"] .book-page,body[data-view="result"] .book-page{height:calc(100dvh - 20px);min-height:750px}
+}
+@media(max-width:560px){
+ .book-tabs{transform:translateY(-5px)}
+ .tab-item{clip-path:inset(0 0 10px 0)}
+ body[data-view="library"] .book-page,body[data-view="result"] .book-page{height:calc(100dvh - 12px);min-height:650px}
+}
+
+/* The entire notebook keeps a stable screen-sized frame. Long paper content
+   scrolls inside it; no portrait stretching and no repeated page-edge art. */
+body:not(.quiz-view) .book-page{
+  display:flex;flex-direction:column;
+  height:calc(100dvh - 22px);
+  min-height:780px;
+  overflow:hidden;
+}
+body:not(.quiz-view) .app-header{flex:none}
+body:not(.quiz-view) #main{
+  flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:#dabca8 transparent;
+  padding-right:6px!important;
+}
+/* Adjust question metadata below the top stitched border in portrait. */
+@media (orientation:portrait){
+ body.quiz-view .book-page{padding-top:126px}
+ body.quiz-view.writing-mode .book-page{padding-top:108px!important}
+}
+@media(max-width:560px){
+ body:not(.quiz-view) .book-page{height:calc(100dvh - 10px);min-height:640px}
+ body.quiz-view .book-page{padding-top:98px}
+ body.quiz-view.writing-mode .book-page{padding-top:91px!important}
+}
