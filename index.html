@@ -404,7 +404,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"æ
     return `<div class="dashboard-layout"><section class="hero"><img class="hero-cat" src="./kat.png" alt="" aria-hidden="true"><h2 class="hero-heading">Schrijven is de beste manier om te onthouden.</h2><button class="button" data-nav="practice">Start oefening ${ico('arrow')}</button></section>
       <section class="panel progress-summary"><div class="panel-topline"><span class="small-eyebrow">Beheersing Â· ${esc(db.settings.level)}</span><span class="status ${mastered?'almost':'new'}">${attempted} geprobeerd</span></div><div><div class="big-number">${percent}<small>%</small></div><div class="stat-caption" style="margin:9px 0 14px">${mastered} / ${pool.length} beheerst</div><div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div></div><hr class="divider"><div class="stat-caption">${due} te herhalen</div></section></div>
       <section class="dashboard-section"><div class="section-head"><h2 class="section-title">Voortgang per niveau</h2>${levelChoices()}</div><div class="stat-grid">${stats}</div></section>
-      <section class="dashboard-section"><div class="panel recent-panel"><h2 class="section-title">Laatste oefeningen</h2>${activity}</div></section><div class="dashboard-version">Versie 4.2</div>`;
+      <section class="dashboard-section"><div class="panel recent-panel"><h2 class="section-title">Laatste oefeningen</h2>${activity}</div></section><div class="dashboard-version">Versie 4.2.2</div>`;
   }
   function renderPractice() {
     const pool=inventory(db.settings.level,db.settings.type);

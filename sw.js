@@ -1,5 +1,5 @@
-/* Kaku 4.2 — isolated assets, offline-first PWA. Progress remains in localStorage. */
-const CACHE='kaku-offline-v16-book42';
+/* Kaku 4.2.2 — isolated assets, offline-first PWA. Progress remains in localStorage. */
+const CACHE='kaku-offline-v17-book422';
 const APP_FILES=[
   "./",
   "./badge-niveau.svg",

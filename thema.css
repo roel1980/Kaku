@@ -837,3 +837,39 @@ body[data-view="library"] .book-page,body[data-view="result"] .book-page{
     padding-right:22px!important;
   }
 }
+
+
+/* Kaku 4.2.2 — genuinely wider notebook image and protected paper insets. */
+/* Notebook layers have 77 px less transparent width, so the physical cover grows
+   instead of merely moving its HTML content closer to the edge. */
+.notebook-visual::before{top:26.25821cqw;bottom:22.31947cqw}
+.book-page,body:not(.quiz-view) .book-page,
+body[data-view="library"] .book-page,body[data-view="result"] .book-page{
+  width:min(calc(100% - 16px),1660px)!important;
+  padding-left:clamp(64px,6.55vw,116px)!important;
+  padding-right:clamp(64px,6.55vw,116px)!important;
+}
+@media(orientation:portrait),(max-width:850px){
+  .book-page,body:not(.quiz-view) .book-page,
+  body[data-view="library"] .book-page,body[data-view="result"] .book-page{
+    width:calc(100% - 12px)!important;
+    padding-left:clamp(46px,6.9vw,76px)!important;
+    padding-right:clamp(46px,6.9vw,76px)!important;
+  }
+  .notebook-visual::before{top:35.01094cqw}
+}
+@media(max-width:560px){
+  .book-page,body:not(.quiz-view) .book-page,
+  body[data-view="library"] .book-page,body[data-view="result"] .book-page{
+    width:calc(100% - 8px)!important;
+    padding-left:clamp(28px,8.2vw,40px)!important;
+    padding-right:clamp(28px,8.2vw,40px)!important;
+  }
+  .notebook-visual::before{top:54.70460cqw}
+}
+
+/* In portrait and narrow layouts, the illustrated notebook already includes
+   the front page edge. Its separate foreground overlay would cover the tabs. */
+@media (orientation:portrait),(max-width:850px){
+  .book-paper-lip{display:none!important}
+}
