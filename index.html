@@ -106,7 +106,29 @@ body.writing-mode .question-panel,body.writing-mode .answer-panel{min-height:135
 body.writing-mode .answer-actions{margin-top:7px}
 @media(orientation:portrait){body.writing-mode main{padding-top:calc(7px + var(--writing-push,0px))}body.writing-mode .question-panel{min-height:85px}body.writing-mode .answer-panel{min-height:130px}}
 
-  </style>
+  
+/* Kaku 1.5: full-width practice form; the CTA follows the question count. */
+.setup-grid{grid-template-columns:minmax(0,1fr)}
+.setup-panel>.setup-start{justify-self:start;min-width:230px;margin:0}
+/* A quiz is a focused, full-screen activity. The permanent navigation returns afterwards. */
+body.quiz-view .app-shell{display:block;background:var(--bg)}
+body.quiz-view .sidebar{display:none!important}
+body.quiz-view .workspace{width:100%;min-width:0}
+body.quiz-view main{max-width:none;width:100%;padding-left:clamp(18px,3vw,46px);padding-right:clamp(18px,3vw,46px)}
+body.quiz-view .quiz-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+body.quiz-view:not(.writing-mode) .question-panel,
+body.quiz-view:not(.writing-mode) .answer-panel{min-height:clamp(290px,49vh,500px)}
+@media (orientation:portrait), (max-width:730px){
+  body.quiz-view .quiz-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+  body.quiz-view:not(.writing-mode) .question-panel{min-height:170px}
+  body.quiz-view:not(.writing-mode) .answer-panel{min-height:285px}
+  .setup-panel>.setup-start{width:100%;min-width:0}
+}
+@media (orientation:landscape) and (max-height:650px){
+  body.quiz-view:not(.writing-mode) .question-panel,
+  body.quiz-view:not(.writing-mode) .answer-panel{min-height:265px}
+}
+</style>
   <title>Kaku — Japans schrijven</title>
 </head>
 <body>
@@ -122,7 +144,7 @@ body.writing-mode .answer-actions{margin-top:7px}
         <button type="button" data-nav="library" class="nav-item"><span class="nav-icon" data-icon="book"></span><span>Woordenlijst</span></button>
         <button type="button" data-nav="settings" class="nav-item"><span class="nav-icon" data-icon="settings"></span><span>Instellingen</span></button>
       </nav>
-      <div class="side-bottom"><div class="side-caption">Versie 1.4</div></div>
+      <div class="side-bottom"><div class="side-caption">Versie 1.5</div></div>
     </aside>
     <div class="workspace">
       
@@ -304,15 +326,9 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
       <div class="setup-grid"><section class="panel setup-panel">
       <div class="setup-field"><div class="field-label">Niveau</div>${levelChoices()}</div>
       <div class="setup-field"><div class="field-label">Type</div><div class="type-grid">${TYPES.map(type=>`<button type="button" data-setting="type" data-value="${type.id}" class="type-card ${db.settings.type===type.id?'active':''}" aria-pressed="${db.settings.type===type.id}"><span class="type-card-icon">${type.symbol}</span><strong>${type.label}</strong><span class="type-desc">${type.desc}</span></button>`).join('')}</div></div>
-      <div class="setup-field"><div class="field-label">Aantal vragen</div><div class="count-row">${choices('count',[[5,'5'],[10,'10'],[25,'25'],[50,'50']])}</div></div></section>
-      <aside class="panel setup-aside"><div class="setup-aside-heading"><h3>Oefening</h3></div><div class="setup-aside-body">
-      <div class="estimate-row"><span>Niveau</span><b>${db.settings.level}</b></div>
-      <div class="estimate-row"><span>Type</span><b>${t.label}</b></div>
-      <div class="estimate-row"><span>Vragen</span><b>${db.settings.count}</b></div>
-      <div class="estimate-row"><span>Beschikbaar</span><b>${pool.length}</b></div>
-      ${pool.length<db.settings.count?`<div class="setup-note">Sommige items worden herhaald.</div>`:''}
-      <button class="button primary full setup-start" data-action="start" ${!pool.length?'disabled':''}>Start oefening ${ico('arrow')}</button>
-      </div></aside></div>`;
+      <div class="setup-field"><div class="field-label">Aantal vragen</div><div class="count-row">${choices('count',[[5,'5'],[10,'10'],[25,'25'],[50,'50']])}</div></div>
+      <button class="button primary setup-start" data-action="start" ${!pool.length?'disabled':''}>Start oefening ${ico('arrow')}</button>
+      </section></div>`;
   }
   function normalizeJapanese(str) {
     return String(str||'').normalize('NFKC').replace(/[\s\u3000、。，．・「」『』（）()！？!?～〜]/g,'').trim();
@@ -449,6 +465,8 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"�
     // Opnieuw bepalen na elke vraag: feedback mag niet in de compacte modus blijven.
     document.body.classList.remove('writing-mode');
     document.querySelector('main')?.style.removeProperty('--writing-push');
+    // Hide the navigation only during an active question; restore it for scores and setup.
+    document.body.classList.toggle('quiz-view',view==='quiz');
     const main=document.querySelector('#main');
     main.innerHTML=({ dashboard:renderDashboard, practice:renderPractice, library:renderLibrary, settings:renderSettings, quiz:renderQuiz, result:renderResult }[view] || renderDashboard)();
 
