@@ -202,6 +202,22 @@ body.quiz-view.writing-mode main{padding-top:calc(10px + var(--writing-push,0px)
 @media(orientation:portrait){
   body.writing-mode main,body.quiz-view.writing-mode main{padding-top:calc(7px + var(--writing-push,0px))}
 }
+
+/* Kaku 1.8 â€” zonder lege ruimte boven de oefening, optimaal benut schrijfvlak. */
+body.quiz-view .app-header{display:none!important}
+body.quiz-view .app-shell main{padding-top:clamp(12px,1.6vh,21px)!important}
+body.quiz-view.writing-mode .app-shell main{padding-top:12px!important}
+body.quiz-view.writing-mode .quiz-grid{
+  min-height:var(--writing-grid-min-height,auto);
+  align-items:stretch;
+}
+body.quiz-view.writing-mode .question-panel,
+body.quiz-view.writing-mode .answer-panel{height:auto}
+body.quiz-view.writing-mode .answer-panel{justify-content:center}
+body.quiz-view.writing-mode .answer-actions{margin-top:10px}
+@media (orientation:portrait){
+  body.quiz-view.writing-mode .app-shell main{padding-top:8px!important}
+}
 </style>
   <title>Kaku â€” Japans schrijven</title>
 </head>
@@ -389,7 +405,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"æ
     return `<div class="dashboard-layout"><section class="hero"><h2 class="hero-heading">Schrijven is de beste manier om te onthouden.</h2><button class="button" data-nav="practice">Start oefening ${ico('arrow')}</button></section>
       <section class="panel progress-summary"><div class="panel-topline"><span class="small-eyebrow">Beheersing Â· ${esc(db.settings.level)}</span><span class="status ${mastered?'almost':'new'}">${attempted} geprobeerd</span></div><div><div class="big-number">${percent}<small>%</small></div><div class="stat-caption" style="margin:9px 0 14px">${mastered} / ${pool.length} beheerst</div><div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div></div><hr class="divider"><div class="stat-caption">${due} te herhalen</div></section></div>
       <section class="dashboard-section"><div class="section-head"><h2 class="section-title">Voortgang per niveau</h2>${levelChoices()}</div><div class="stat-grid">${stats}</div></section>
-      <section class="dashboard-section"><div class="panel recent-panel"><h2 class="section-title">Laatste oefeningen</h2>${activity}</div></section><div class="dashboard-version">Versie 1.7</div>`;
+      <section class="dashboard-section"><div class="panel recent-panel"><h2 class="section-title">Laatste oefeningen</h2>${activity}</div></section><div class="dashboard-version">Versie 1.8</div>`;
   }
   function renderPractice() {
     const pool=inventory(db.settings.level,db.settings.type);
@@ -463,7 +479,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"æ
       <div class="quiz-grid"><section class="question-panel"><div class="question-centered"><div class="question-word ${sentence?'sentence':''}">${esc(prompt)}</div></div></section>
       <section class="panel answer-panel"><div class="answer-label-row"><label class="answer-label" for="answer-input">Jouw antwoord</label></div>
       <form id="answer-form" class="answer-submit-form" autocomplete="off"></form>
-       <input id="answer-input" class="answer-input" type="text" form="answer-form" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Schrijf in het Japansâ€¦" value="${p?esc(p.text):''}" ${p?'disabled':''}>
+       <input id="answer-input" class="answer-input" type="text" form="answer-form" lang="ja-JP" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" autofocus placeholder="Schrijf in het Japansâ€¦" value="${p?esc(p.text):''}" ${p?'disabled':''}>
       ${feedback}
       <div class="answer-actions"><div style="display:flex;gap:8px">${p?`<button class="button primary" data-action="next">${quiz.pos+1===quiz.queue.length?'Bekijk score':'Volgende'} ${ico('arrow')}</button>`:`<button class="button outline" data-action="skip">Overslaan</button><button class="button dark" type="submit" form="answer-form">Controleren ${ico('check')}</button>`}</div></div>
       </section></div>`;
@@ -536,14 +552,20 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"æ
   function render() {
     // Opnieuw bepalen na elke vraag: feedback mag niet in de compacte modus blijven.
     document.body.classList.remove('writing-mode');
-    document.querySelector('main')?.style.removeProperty('--writing-push');
+    document.querySelector('.quiz-grid')?.style.removeProperty('--writing-grid-min-height');
     // Hide the navigation only during an active question; restore it for scores and setup.
     document.body.classList.toggle('quiz-view',view==='quiz');
     const main=document.querySelector('#main');
     main.innerHTML=({ dashboard:renderDashboard, practice:renderPractice, library:renderLibrary, settings:renderSettings, quiz:renderQuiz, result:renderResult }[view] || renderDashboard)();
 
     document.querySelectorAll('#navigation [data-nav]').forEach(btn=>btn.classList.toggle('is-active',btn.dataset.nav===view));
-    if(view==='quiz' && !quiz.pending) document.querySelector('#answer-input')?.focus({preventScroll:true});
+    if(view==='quiz' && !quiz.pending) {
+      // Direct binnen de klik op 'Start oefening' of 'Volgende':
+      // iPadOS staat het openen van het systeemtoetsenbord doorgaans alleen na gebruikersinteractie toe.
+      // De geselecteerde invoermethode (Japans handschrift) wordt door iPadOS beheerd.
+      const input=document.querySelector('#answer-input');
+      input?.focus({preventScroll:true});
+    }
     syncWritingMode();
 
   }
@@ -588,49 +610,42 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"æ
     }).catch(e=>showToast(e.message||'Kon back-up niet openen.'));
   }
 
-  // Apple Pencil schrijft via het gewone iPadOS-toetsenbord.
-  // Het handschriftpaneel is van iPadOS zelf en kan niet vanuit de pagina worden verkleind.
-  // Maak daarom het zichtbare quizgedeelte compact en schuif het in beeld.
+  // Het Apple Pencil-handschriftpaneel is een Japanse systeemtoetsenbordfunctie,
+  // niet een HTML-inputtype. Gebruik de laatst gekozen iPadOS-invoermethode.
   const touchKeyboardDevice = (navigator.maxTouchPoints || 0) > 0 ||
     (window.matchMedia && matchMedia('(pointer:coarse)').matches);
   let writingScrollToken=0;
   function scrollWritingIntoView() {
     if (!document.body.classList.contains('writing-mode')) return;
-    const main=document.querySelector('main');
+    const grid=document.querySelector('.quiz-grid');
     const prompt=document.querySelector('.question-word');
     const answer=document.querySelector('.answer-panel');
     const input=document.querySelector('#answer-input');
-    if (!main || !prompt || !answer || !input) return;
+    if (!grid || !prompt || !answer || !input) return;
     const vv=window.visualViewport;
     const visibleTop=vv ? vv.offsetTop : 0;
     const visibleBottom=visibleTop+(vv ? vv.height : window.innerHeight);
     const screenHeight=window.screen?.height||window.innerHeight;
     const keyboardOcclusion=Math.max(window.innerHeight,screenHeight)-visibleBottom;
-    // Verplaats alleen naar het schrijfblok als het scherm werkelijk is verkleind.
-    // Zonder schermtoetsenbord (Magic Keyboard) blijft de gebruikelijke layout staan.
     const keyboardVisible=keyboardOcclusion>120;
-    const oldPush=parseFloat(main.style.getPropertyValue('--writing-push'))||0;
-    const answerRect=answer.getBoundingClientRect();
-    const promptRect=prompt.getBoundingClientRect();
     if (!keyboardVisible) {
-      if(oldPush) main.style.setProperty('--writing-push','0px');
+      grid.style.removeProperty('--writing-grid-min-height');
       return;
     }
-    // Dock de complete quiz vlak boven iPadOS-handschrift, met 15px ruimte.
-    // Rekening houden met de bestaande verschuiving voorkomt oscillaties bij resize.
-    const targetBottom=visibleBottom-15;
-    const delta=targetBottom-answerRect.bottom;
-    const newPush=Math.max(0,Math.min(360,oldPush+delta));
-    if(Math.abs(oldPush-newPush)>2) main.style.setProperty('--writing-push',Math.round(newPush)+'px');
-    // Past alles niet in het zichtbare deel, dan gaat het invoerveld voor.
-    const nextInput=input.getBoundingClientRect();
-    const nextPrompt=prompt.getBoundingClientRect();
-    const nextAnswer=answer.getBoundingClientRect();
-    let scrollDelta=0;
-    if(nextAnswer.bottom>visibleBottom-9) scrollDelta=nextAnswer.bottom-visibleBottom+9;
-    else if(nextPrompt.top<visibleTop+7 && nextInput.bottom-nextPrompt.top<visibleBottom-visibleTop-14)
-      scrollDelta=nextPrompt.top-visibleTop-7;
-    if(Math.abs(scrollDelta)>3) window.scrollBy(0,scrollDelta);
+    // Houd de kop direct bovenaan; vergroot liever de kaarten naar het toetsenbord
+    // dan de hele quiz omlaag te schuiven met een grote lege ruimte erboven.
+    const gridTop=grid.getBoundingClientRect().top;
+    const fillHeight=Math.max(0,Math.floor(visibleBottom-gridTop-15));
+    if(fillHeight>0) grid.style.setProperty('--writing-grid-min-height',fillHeight+'px');
+    // Bij een erg klein zichtbaar gedeelte gaat leesbare invoer voor: scrol alleen
+    // als de invoer/knoppen daadwerkelijk door het systeemtoetsenbord worden bedekt.
+    const rect=answer.getBoundingClientRect();
+    const overflow=rect.bottom-visibleBottom+12;
+    if(overflow>4) window.scrollBy({top:overflow,behavior:'instant'});
+    else if(prompt.getBoundingClientRect().top<visibleTop+7 &&
+      rect.bottom-prompt.getBoundingClientRect().top<visibleBottom-visibleTop-16) {
+      window.scrollBy({top:prompt.getBoundingClientRect().top-visibleTop-7,behavior:'instant'});
+    }
   }
   function scheduleWritingScroll() {
     const token=++writingScrollToken;
@@ -650,7 +665,7 @@ window.KAKU_ITEMS = [{"id":"n5-k-15917f3b32","level":"N5","type":"kanji","ja":"æ
     if(active) scheduleWritingScroll();
     else {
       ++writingScrollToken;
-      document.querySelector('main')?.style.removeProperty('--writing-push');
+      document.querySelector('.quiz-grid')?.style.removeProperty('--writing-grid-min-height');
     }
   }
   document.addEventListener('focusin',e=>{
