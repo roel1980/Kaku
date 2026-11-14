@@ -1,0 +1,10 @@
+html bytes 14149346
+landscape {'book': {'x': 11, 'y': 10, 'w': 1463, 'h': 1145}, 'tabs': {'x': 632, 'y': 81, 'w': 720, 'h': 82}, 'logo': {'x': 120, 'y': 79, 'w': 280, 'h': 87}, 'lip': {'x': 11, 'y': 10, 'w': 1463, 'h': 247}, 'main': {'x': 132, 'y': 213, 'w': 1219, 'h': 808}, 'windowScrollHeight': 1172, 'mainScrollHeight': 809, 'mainClientHeight': 809, 'overflow': 'visible', 'scrollWidth': 1485, 'errors': []}
+landscape library {'bookHeight': 6081.734375, 'bodyHeight': 6108, 'mainOverflow': 'visible', 'mainClientHeight': 5745, 'mainScrollHeight': 5745}
+landscape input focused answer-input errors []
+portrait {'book': {'x': 11, 'y': 10, 'w': 812, 'h': 1498}, 'tabs': {'x': 236, 'y': 93, 'w': 528, 'h': 77}, 'logo': {'x': 59, 'y': 69, 'w': 210, 'h': 71}, 'lip': {'x': 0, 'y': 0, 'w': 0, 'h': 0}, 'main': {'x': 69, 'y': 185, 'w': 695, 'h': 1256}, 'windowScrollHeight': 1525, 'mainScrollHeight': 1257, 'mainClientHeight': 1257, 'overflow': 'visible', 'scrollWidth': 834, 'errors': []}
+portrait library {'bookHeight': 6031.109375, 'bodyHeight': 6057, 'mainOverflow': 'visible', 'mainClientHeight': 5789, 'mainScrollHeight': 5789}
+portrait input focused answer-input errors []
+phone {'book': {'x': 4, 'y': 10, 'w': 382, 'h': 1575}, 'tabs': {'x': 32, 'y': 101, 'w': 326, 'h': 61}, 'logo': {'x': 26, 'y': 55, 'w': 145, 'h': 55}, 'lip': {'x': 0, 'y': 0, 'w': 0, 'h': 0}, 'main': {'x': 32, 'y': 166, 'w': 326, 'h': 1357}, 'windowScrollHeight': 1602, 'mainScrollHeight': 1358, 'mainClientHeight': 1358, 'overflow': 'visible', 'scrollWidth': 390, 'errors': []}
+phone library {'bookHeight': 7060.34375, 'bodyHeight': 7086, 'mainOverflow': 'visible', 'mainClientHeight': 6842, 'mainScrollHeight': 6842}
+phone input focused answer-input errors []

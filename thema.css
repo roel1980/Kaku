@@ -811,3 +811,29 @@ body[data-view="result"] .notebook-visual{
 @media(max-width:560px){
  .book-tabs,body:not(.quiz-view) .book-tabs{top:37px!important}
 }
+
+
+/* 4.2.1 — page made wider: less brown side margin, more paper width for content. */
+.book-page,body:not(.quiz-view) .book-page,
+body[data-view="library"] .book-page,body[data-view="result"] .book-page{
+  width:min(calc(100% - 8px),1660px)!important;
+  padding-left:clamp(34px,4.7vw,78px)!important;
+  padding-right:clamp(34px,4.7vw,78px)!important;
+}
+.book-paper-lip{width:calc(100% - 2px)!important;left:1px!important}
+@media (orientation:portrait),(max-width:850px){
+  .book-page,body:not(.quiz-view) .book-page,
+  body[data-view="library"] .book-page,body[data-view="result"] .book-page{
+    width:min(calc(100% - 8px),1400px)!important;
+    padding-left:clamp(34px,5.8vw,62px)!important;
+    padding-right:clamp(34px,5.8vw,62px)!important;
+  }
+}
+@media (max-width:560px){
+  .book-page,body:not(.quiz-view) .book-page,
+  body[data-view="library"] .book-page,body[data-view="result"] .book-page{
+    width:calc(100% - 4px)!important;
+    padding-left:22px!important;
+    padding-right:22px!important;
+  }
+}
